@@ -17,6 +17,7 @@ Since, python lists are mutable, m and n will still be reference to the same obj
 With `new_list = my_list`, you don't actually have two lists. The assignment just copies the reference to the list, not the actual list, so both `new_list` and `my_list` refer to the same list after the assignment.
 
 #### Understanding mutable vs immutable
+
 **Mutable
 
 `lists, dictionaries and sets` are mutable , meaning you can change their content without changing their identity. Custom classes are generally mutable.
@@ -33,7 +34,7 @@ color[-1] = "orange"
 print(color) 
 ```
 
-**Immutable
+**Immutable 
 
 These are of in-built types like `int, float, bool, string, unicode, tuple`. In simple words, an immutable object can’t be changed after it is created
 
