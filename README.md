@@ -18,7 +18,7 @@ With `new_list = my_list`, you don't actually have two lists. The assignment jus
 
 #### Understanding mutable vs immutable
 
-**Mutable
+**Mutable**
 
 `lists, dictionaries and sets` are mutable , meaning you can change their content without changing their identity. Custom classes are generally mutable.
 
@@ -34,7 +34,7 @@ color[-1] = "orange"
 print(color) 
 ```
 
-**Immutable 
+**Immutable**
 
 These are of in-built types like `int, float, bool, string, unicode, tuple`. In simple words, an immutable object can’t be changed after it is created
 
