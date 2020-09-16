@@ -77,6 +77,26 @@ p1.myfunc()
 ```
 > Note: The `self` parameter is a reference to the current instance of the class, and is used to access variables that belong to the class.
 
+**Python 3: 3 ways of creating class; Class and object inheritance**
+**Q: Should all Python classes extend object?**
+
+>In python 3 you can create a class in three different ways & internally they are all equal (see examples). It doesn't matter how you create a class, all classes in python 3 inherits from special class called object. The class object is fundamental class in python and provides lot of functionality like double-underscore methods, descriptors, super() method, property() method etc.
+
+Example 1.
+```
+class MyClass:
+ pass
+```
+Example 2.
+```
+class MyClass():
+ pass
+```
+Example 3.
+```
+class MyClass(object):
+  pass
+```
 
 ### Create Object
 Now we can use the class named MyClass to create objects:
