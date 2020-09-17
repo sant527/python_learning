@@ -1,3 +1,5 @@
+# FIRST REMOVE THE TOC FORM THE README MANUALLY
+
 cp /home/web_dev/github_personl_token_for_gh_md_toc/token.txt .
 split -b 300KB README.md
 rm -rf toc
