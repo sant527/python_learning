@@ -1,3 +1,21 @@
+   * [python_learning](#python_learning)
+      * [Q: List changes unexpectedly after assignment. How do I clone or copy it to prevent this?](#q-list-changes-unexpectedly-after-assignment-how-do-i-clone-or-copy-it-to-prevent-this)
+         * [Answer PART1: List changes unexpectedly after assignment](#answer-part1-list-changes-unexpectedly-after-assignment)
+            * [Understanding mutable vs immutable](#understanding-mutable-vs-immutable)
+      * [Python Classes](#python-classes)
+         * [To create a class, use the keyword class:](#to-create-a-class-use-the-keyword-class)
+         * [Create Object](#create-object)
+      * [Python getattr()](#python-getattr)
+   * [How to flatten a nested array and again get it back to nested state:](#how-to-flatten-a-nested-array-and-again-get-it-back-to-nested-state)
+   * [python_learning](#python_learning)
+      * [Q: List changes unexpectedly after assignment. How do I clone or copy it to prevent this?](#q-list-changes-unexpectedly-after-assignment-how-do-i-clone-or-copy-it-to-prevent-this)
+         * [Answer PART1: List changes unexpectedly after assignment](#answer-part1-list-changes-unexpectedly-after-assignment)
+            * [Understanding mutable vs immutable](#understanding-mutable-vs-immutable)
+      * [Python Classes](#python-classes)
+         * [To create a class, use the keyword class:](#to-create-a-class-use-the-keyword-class)
+         * [Create Object](#create-object)
+      * [Python getattr()](#python-getattr)
+   * [How to flatten a nested array and again get it back to nested state:](#how-to-flatten-a-nested-array-and-again-get-it-back-to-nested-state)
 # python_learning
 
 ## Q: List changes unexpectedly after assignment. How do I clone or copy it to prevent this?
