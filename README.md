@@ -17,7 +17,7 @@ https://stackoverflow.com/questions/2612802/list-changes-unexpectedly-after-assi
 ### Answer PART1: List changes unexpectedly after assignment
 
 **Trying to Assign mutable objects**
-```
+```python
 m = list([1, 2, 3])`
 n = m
 ```
@@ -42,7 +42,7 @@ The ids of new_list and original_list is different.
 `lists, dictionaries and sets` are mutable , meaning you can change their content without changing their identity. Custom classes are generally mutable.
 
 Trying to change mutable objects
-```
+```python
 # Python code to test that 
 # lists are mutable 
 color = ["red", "blue", "green"] 
@@ -57,7 +57,7 @@ print(color)
 
 These are of in-built types like `int, float, bool, string, unicode, tuple`. In simple words, an immutable object can’t be changed after it is created
 
-```
+```python
 tuple1 = (0, 1, 2, 3)  
 tuple1[0] = 4
 print(tuple1)
@@ -71,7 +71,7 @@ print(tuple1)
 
 ### To create a class, use the keyword class:
 
-```
+```python
 class Person:
   def __init__(self, name, age):
     self.name = name
@@ -92,17 +92,17 @@ p1.myfunc()
 >In python 3 you can create a class in three different ways & internally they are all equal (see examples). It doesn't matter how you create a class, all classes in python 3 inherits from special class called object. The class object is fundamental class in python and provides lot of functionality like double-underscore methods, descriptors, super() method, property() method etc.
 
 Example 1.
-```
+```python
 class MyClass:
  pass
 ```
 Example 2.
-```
+```python
 class MyClass():
  pass
 ```
 Example 3.
-```
+```python
 class MyClass(object):
   pass
 ```
@@ -112,7 +112,7 @@ Now we can use the class named MyClass to create objects:
 
 Example
 Create an object named p1, and print the value of x:
-```
+```python
 p1 = Person("John", 36)
 p1.myfunc()
 ```
@@ -121,11 +121,11 @@ p1.myfunc()
 The `getattr()` method returns the value of the named attribute of an object. If not found, it returns the default value provided to the function.
 
 **The syntax of getattr() method is:**
-```
+```python
 getattr(object, name[, default])
 ```
 The above syntax is equivalent to:
-```
+```python
 object.name
 ```
 
@@ -142,7 +142,7 @@ getattr() method returns:
 `AttributeError` exception, if named attribute is not found and default is not defined
 
 **Example 1: How getattr() works in Python?**
-```
+```python
 class Person:
     age = 23
     name = "Adam"
@@ -163,11 +163,11 @@ class Person:
 person = Person()
 ```
 **when default value is provided**
-```
+```python
 print('The sex is:', getattr(person, 'sex', 'Male'))
 ```
 **when no default value is provided**
-```
+```python
 print('The sex is:', getattr(person, 'sex'))
 ```
 Output
@@ -181,7 +181,7 @@ The named attribute sex is not present in the class Person. So, when calling get
 
 # How to flatten a nested array and again get it back to nested state:
 
-```
+```python
 #Nested bookmark array:
 
 bookmarks = [
@@ -418,4 +418,3 @@ for i in range(toclen):
 ###     ]
 ### ]
 ```
-
