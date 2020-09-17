@@ -169,3 +169,244 @@ The named attribute sex is not present in the class Person. So, when calling get
 ```
 **But, if we don't provide any default value, when the named attribute sex is not found, it raises an AttributeError saying the object has no sex attribute.**
 
+
+# How to flatten a nested array and again get it back to nested state:
+
+```
+#Nested bookmark array:
+
+bookmarks = [
+    {
+        "/Page": "0",
+        "/Title": "title000",
+        "/Type": "/Fit"
+    },
+    {
+        "/Page": "0",
+        "/Title": "title000",
+        "/Type": "/Fit"
+    },
+    [
+        {
+            "/Page": "1",
+            "/Title": "title001",
+            "/Type": "/Fit"
+        },
+        [
+            {
+                "/Page": "3",
+                "/Title": "title008",
+                "/Type": "/Fit"
+            },
+            [
+                {
+                    "/Page": "6",
+                    "/Title": "title006",
+                    "/Type": "/Fit"
+                }
+            ]
+        ],
+        {
+            "/Page": "2",
+            "/Title": "title002",
+            "/Type": "/Fit"
+        },
+        [
+            {
+                "/Page": "3",
+                "/Title": "title008",
+                "/Type": "/Fit"
+            },
+            [
+                {
+                    "/Page": "6",
+                    "/Title": "title006",
+                    "/Type": "/Fit"
+                },
+                {
+                    "/Page": "7",
+                    "/Title": "title007",
+                    "/Type": "/Fit"
+                }
+            ]
+        ]
+    ],
+    {
+        "/Page": "0",
+        "/Title": "title000",
+        "/Type": "/Fit"
+    },
+    [
+        {
+            "/Page": "1",
+            "/Title": "title001",
+            "/Type": "/Fit"
+        },
+        {
+            "/Page": "2",
+            "/Title": "title002",
+            "/Type": "/Fit"
+        }
+    ]
+]
+
+
+#### CONVERT NESTED ARRAY TO FLATTENED ARRAY
+
+def flatten1(bookmarks,hare_array,last_added=0):
+    hare= hare_array
+    last_added = last_added + 1
+    for b in bookmarks:
+        if isinstance(b, list):
+            flatten1(b, hare, last_added)
+            continue
+        b["level"] = last_added
+        hare.append(b)
+
+hare=[]
+flatten1(bookmarks,hare)
+
+import json
+print("hare = "+json.dumps(hare, indent=1, sort_keys=True, default=str))
+
+#PRINTOUTPUT
+# hare = [
+#     {"/Page": "0","/Title": "title000","/Type": "/Fit","level": 1},
+#     {"/Page": "0","/Title": "title000","/Type": "/Fit","level": 1},
+#     {"/Page": "1","/Title": "title001","/Type": "/Fit","level": 2},
+#     {"/Page": "3","/Title": "title008","/Type": "/Fit","level": 3},
+#     {"/Page": "6","/Title": "title006","/Type": "/Fit","level": 4},
+#     {"/Page": "2","/Title": "title002","/Type": "/Fit","level": 2},
+#     {"/Page": "3","/Title": "title008","/Type": "/Fit","level": 3},
+#     {"/Page": "6","/Title": "title006","/Type": "/Fit","level": 4},
+#     {"/Page": "7","/Title": "title007","/Type": "/Fit","level": 4},
+#     {"/Page": "0","/Title": "title000","/Type": "/Fit","level": 1},
+#     {"/Page": "1","/Title": "title001","/Type": "/Fit","level": 2},
+#     {"/Page": "2","/Title": "title002","/Type": "/Fit","level": 2}
+# ]
+
+# Note that we add parameter called level
+
+
+
+#### CONVERT FLATTENED ARRAY TO NESTED ARRAY BACK
+
+toc = hare.copy()
+
+toclen = len(toc)
+
+
+import pudb;pudb.set_trace()
+nested_array=[]
+for i in range(toclen):
+    o = toc[i]
+    n=toc[i]["level"]
+    print("n=toc[i][\"level\"]:: i,n ::"+str(i)+","+str(n))
+    index=""
+    arr1 = None
+    for j in range(0,n):
+        print("i,j ::::"+str(i)+","+str(j))
+        if arr1 is None:
+            arr1 = nested_array
+        else:
+            len_arr1 = len(arr1)
+            if isinstance(arr1[len_arr1-1], list):
+                arr1=arr1[len_arr1-1]
+            else:
+                arr1.append([])
+                len_arr1 = len(arr1)
+                arr1=arr1[len_arr1-1]
+    arr1.append(o)
+    import json
+    print("nested_array == "+json.dumps(nested_array, indent=4, sort_keys=True, default=str))
+
+
+#PRINT OUTPUT
+### nested_array == [
+###     {
+###         "/Page": "0",
+###         "/Title": "title000",
+###         "/Type": "/Fit",
+###         "level": 1
+###     },
+###     {
+###         "/Page": "0",
+###         "/Title": "title000",
+###         "/Type": "/Fit",
+###         "level": 1
+###     },
+###     [
+###         {
+###             "/Page": "1",
+###             "/Title": "title001",
+###             "/Type": "/Fit",
+###             "level": 2
+###         },
+###         [
+###             {
+###                 "/Page": "3",
+###                 "/Title": "title008",
+###                 "/Type": "/Fit",
+###                 "level": 3
+###             },
+###             [
+###                 {
+###                     "/Page": "6",
+###                     "/Title": "title006",
+###                     "/Type": "/Fit",
+###                     "level": 4
+###                 }
+###             ]
+###         ],
+###         {
+###             "/Page": "2",
+###             "/Title": "title002",
+###             "/Type": "/Fit",
+###             "level": 2
+###         },
+###         [
+###             {
+###                 "/Page": "3",
+###                 "/Title": "title008",
+###                 "/Type": "/Fit",
+###                 "level": 3
+###             },
+###             [
+###                 {
+###                     "/Page": "6",
+###                     "/Title": "title006",
+###                     "/Type": "/Fit",
+###                     "level": 4
+###                 },
+###                 {
+###                     "/Page": "7",
+###                     "/Title": "title007",
+###                     "/Type": "/Fit",
+###                     "level": 4
+###                 }
+###             ]
+###         ]
+###     ],
+###     {
+###         "/Page": "0",
+###         "/Title": "title000",
+###         "/Type": "/Fit",
+###         "level": 1
+###     },
+###     [
+###         {
+###             "/Page": "1",
+###             "/Title": "title001",
+###             "/Type": "/Fit",
+###             "level": 2
+###         },
+###         {
+###             "/Page": "2",
+###             "/Title": "title002",
+###             "/Type": "/Fit",
+###             "level": 2
+###         }
+###     ]
+### ]
+```
+
