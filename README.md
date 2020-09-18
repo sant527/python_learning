@@ -8,6 +8,7 @@
       * [Python getattr()](#python-getattr)
    * [How to flatten a nested array and again get it back to nested state:](#how-to-flatten-a-nested-array-and-again-get-it-back-to-nested-state)
    * [Tabs and invalid syntax](#tabs-and-invalid-syntax)
+
 # python_learning
 
 ## Q: List changes unexpectedly after assignment. How do I clone or copy it to prevent this?
@@ -327,8 +328,9 @@ for i in range(toclen):
                 len_arr1 = len(arr1)
                 arr1=arr1[len_arr1-1]
     arr1.append(o)
-    import json
-    print("nested_array == "+json.dumps(nested_array, indent=4, sort_keys=True, default=str))
+
+import json
+print("nested_array == "+json.dumps(nested_array, indent=4, sort_keys=True, default=str))
 
 
 #PRINT OUTPUT
