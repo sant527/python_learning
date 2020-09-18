@@ -7,6 +7,7 @@
          * [Create Object](#create-object)
       * [Python getattr()](#python-getattr)
    * [How to flatten a nested array and again get it back to nested state:](#how-to-flatten-a-nested-array-and-again-get-it-back-to-nested-state)
+   * [Tabs and invalid syntax](#tabs-and-invalid-syntax)
 # python_learning
 
 ## Q: List changes unexpectedly after assignment. How do I clone or copy it to prevent this?
@@ -417,4 +418,42 @@ for i in range(toclen):
 ###         }
 ###     ]
 ### ]
+```
+
+
+# Tabs and invalid syntax
+
+The below code works well in python shell
+
+```
+import fitz
+filename="Adi_index.pdf"
+doc = fitz.open(filename)  # open file
+toc_mu = doc.getToC(False) # its table of contents (list)
+# [ [level,Title,Pagenum],[level,Title,Pagenum] .....]
+pc = len(doc)  # number of its pages
+
+new_format=[]
+for line in toc_mu:  # read toc 
+    new_format.append({"/Page": line[2],"/Title": line[1],"/Type": "/Fit","level": line[0]})
+
+print(new_format)
+```
+
+whereas 
+
+```
+import fitz
+filename="Adi_index.pdf"
+doc = fitz.open(filename)  # open file
+toc_mu = doc.getToC(False) # its table of contents (list)
+# [ [level,Title,Pagenum],[level,Title,Pagenum] .....]
+pc = len(doc)  # number of its pages
+
+new_format=[]
+for line in toc_mu:  # read toc 
+    new_format.append({"/Page": line[2],"/Title": line[1],"/Type": "/Fit","level": line[0]})
+    
+# IF THERE IS TAB ABOVE THEN ITS INVALID SYNTAX
+print(new_format)
 ```
