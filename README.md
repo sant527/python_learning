@@ -8,6 +8,8 @@
       * [Python getattr()](#python-getattr)
    * [How to flatten a nested array and again get it back to nested state:](#how-to-flatten-a-nested-array-and-again-get-it-back-to-nested-state)
    * [Tabs and invalid syntax](#tabs-and-invalid-syntax)
+   * [How to know the path of a module](#how-to-know-the-path-of-a-module)
+
 # python_learning
 
 ## Q: List changes unexpectedly after assignment. How do I clone or copy it to prevent this?
@@ -500,3 +502,12 @@ This will look as belwo in python shell and it gives error
 ```
 
 ![](./images/2020-09-18_12-29.png)
+
+# How to know the path of a module
+
+```
+>> import PyPDF2
+>>> PyPDF2.__file__
+'/usr/lib/python3.7/site-packages/PyPDF2/__init__.py'
+>>> 
+```
