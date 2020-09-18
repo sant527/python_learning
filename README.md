@@ -8,6 +8,16 @@
       * [Python getattr()](#python-getattr)
    * [How to flatten a nested array and again get it back to nested state:](#how-to-flatten-a-nested-array-and-again-get-it-back-to-nested-state)
    * [Tabs and invalid syntax](#tabs-and-invalid-syntax)
+   * [python_learning](#python_learning)
+      * [Q: List changes unexpectedly after assignment. How do I clone or copy it to prevent this?](#q-list-changes-unexpectedly-after-assignment-how-do-i-clone-or-copy-it-to-prevent-this)
+         * [Answer PART1: List changes unexpectedly after assignment](#answer-part1-list-changes-unexpectedly-after-assignment)
+            * [Understanding mutable vs immutable](#understanding-mutable-vs-immutable)
+      * [Python Classes](#python-classes)
+         * [To create a class, use the keyword class:](#to-create-a-class-use-the-keyword-class)
+         * [Create Object](#create-object)
+      * [Python getattr()](#python-getattr)
+   * [How to flatten a nested array and again get it back to nested state:](#how-to-flatten-a-nested-array-and-again-get-it-back-to-nested-state)
+   * [Tabs and invalid syntax](#tabs-and-invalid-syntax)
 
 # python_learning
 
@@ -442,6 +452,24 @@ for line in toc_mu:  # read toc
 print(new_format)
 ```
 
+This will look as below in python shell
+
+```
+>>> import fitz
+>>> filename="Adi_index.pdf"
+>>> doc = fitz.open(filename)  # open file
+>>> toc_mu = doc.getToC(False) # its table of contents (list)
+>>> # [ [level,Title,Pagenum],[level,Title,Pagenum] .....]
+... pc = len(doc)  # number of its pages
+>>> 
+>>> new_format=[]
+>>> for line in toc_mu:  # read toc 
+...     new_format.append({"/Page": line[2],"/Title": line[1],"/Type": "/Fit","level": line[0]})
+... 
+>>> print(new_format)
+```
+
+
 whereas 
 
 ```
@@ -459,3 +487,27 @@ for line in toc_mu:  # read toc
 # IF THERE IS TAB ABOVE THEN ITS INVALID SYNTAX
 print(new_format)
 ```
+
+![](./images/2020-09-18_12-20.png)
+
+This will look as belwo in python shell and it gives error
+
+```
+>>> import fitz
+>>> filename="Adi_index.pdf"
+>>> doc = fitz.open(filename)  # open file
+>>> toc_mu = doc.getToC(False) # its table of contents (list)
+>>> # [ [level,Title,Pagenum],[level,Title,Pagenum] .....]
+... pc = len(doc)  # number of its pages
+>>> 
+>>> new_format=[]
+>>> for line in toc_mu:  # read toc 
+...     new_format.append({"/Page": line[2],"/Title": line[1],"/Type": "/Fit","level": line[0]})
+...     
+... # IF THERE IS TAB ABOVE THEN ITS INVALID SYNTAX
+... print(new_format)
+  File "<stdin>", line 5
+    print(new_format)
+```
+
+![](./images/2020-09-18_12-29.png)
