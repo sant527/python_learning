@@ -511,3 +511,26 @@ This will look as belwo in python shell and it gives error
 '/usr/lib/python3.7/site-packages/PyPDF2/__init__.py'
 >>> 
 ```
+
+
+# Checking bool: is vs ==
+
+https://stackoverflow.com/questions/27276610/boolean-identity-true-vs-is-true
+
+ > if you want to check that some variable "is exactly True", you have to use the identity operator is and dont use ==
+ 
+ ```python
+ >>> d = True
+>>> d is True
+True
+>>> d = 1
+>>> d is True
+False
+>>> d == True
+True
+>>> d = 2
+>>> d == True
+False
+ ```
+ 
+ > If you want to make sure that foo really is a boolean and of value True, use the is operator.
