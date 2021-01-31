@@ -534,3 +534,62 @@ False
  ```
  
  > If you want to make sure that foo really is a boolean and of value True, use the is operator.
+
+
+
+
+# TIME ZONE AND PYTHON WITH DAYLIST SAVING
+
+## Q I want to know the current time as per time zone 'America/New_York'
+
+Note: datetime.now() does not return a timezone aware timestamp. It will return the pc local time
+
+```python
+from datetime import datetime 
+import pytz
+pacific = pytz.timezone('America/New_York')
+# datetime.utcnow() -- gives current time in utc time zone
+# but this time is not a timezone aware time. 
+# So we make it utc time zone aware
+current_time_utc = pytz.utc.localize(datetime.utcnow())
+current_time_utc.isoformat()
+current_time_pacific = current_time_utc.astimezone(pacific)
+current_time_pacific.isoformat()
+```
+Example
+```python
+>>> pacific = pytz.timezone('America/New_York')
+>>> current_time_utc = pytz.utc.localize(datetime.utcnow())
+>>> current_time_utc.isoformat()
+'2021-01-31T03:57:59.431527+00:00'
+>>> current_time_pacific = current_time_utc.astimezone(pacific)
+>>> current_time_pacific.isoformat()
+'2021-01-30T22:57:59.431527-05:00'
+```
+
+
+## checking for daylight saving
+in usa/newyork EST is winter time and EDT is summer time where day light saving is used
+
+```python
+from datetime import datetime 
+import pytz
+pacific = pytz.timezone('America/New_York')
+# we are using a particular time in june month and making it as utc time aware
+current_time_utc = pytz.utc.localize(datetime(2021,6,1,0,0,0))
+current_time_utc.isoformat()
+current_time_pacific = current_time_utc.astimezone(pacific)
+current_time_pacific.isoformat()
+```
+
+```python
+>>> pacific = pytz.timezone('America/New_York')
+>>> current_time_utc = pytz.utc.localize(datetime(2021,6,1,0,0,0))
+>>> current_time_utc.isoformat()
+'2021-06-01T00:00:00+00:00'
+>>> current_time_pacific = current_time_utc.astimezone(pacific)
+>>> current_time_pacific.isoformat()
+'2021-05-31T20:00:00-04:00'
+```
+
+so -4:00 and -5:00 means its showing correct
