@@ -617,3 +617,16 @@ date
 mid_night_pacific = pacific.localize(datetime.combine(date, time.min)).isoformat()
 mid_night_pacific
 ```
+
+
+## How to convert isoformat string to datetime
+
+```python
+import dateutil.parser
+import datetime
+import pytz
+
+EST = pytz.timezone('America/New_york')
+when  = dateutil.parser.parse("2021-01-30 09:59:57+00")
+when.astimezone(EST)
+```
