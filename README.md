@@ -630,3 +630,23 @@ EST = pytz.timezone('America/New_york')
 when  = dateutil.parser.parse("2021-01-30 09:59:57+00")
 when.astimezone(EST)
 ```
+
+
+# Django Safely outputs a Python object as JSON, wrapped in a <script> tag, ready for use with JavaScript.
+https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#json-script
+
+```javascript
+{{ value|json_script:"hello-data" }}
+```
+
+If value is the dictionary {'hello': 'world'}, the output will be:
+
+```javascript
+<script id="hello-data" type="application/json">{"hello": "world"}</script>
+```
+
+The resulting data can be accessed in JavaScript like this:
+
+```javascript
+const value = JSON.parse(document.getElementById('hello-data').textContent);
+```
