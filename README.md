@@ -593,3 +593,27 @@ current_time_pacific.isoformat()
 ```
 
 so -4:00 and -5:00 means its showing correct
+
+
+## How to get midnight time from current time
+
+sometimes we want to know the data for that day till that time from midnight.
+
+By below we can get the midnight time and from above we can get the current time
+
+```
+from datetime import datetime, time
+import pytz
+#get current time in that particular time zone
+pacific = pytz.timezone('America/New_York')
+current_time_utc = pytz.utc.localize(datetime.utcnow())
+current_time_utc.isoformat()
+current_time_pacific = current_time_utc.astimezone(pacific)
+current_time_pacific.isoformat()
+
+# get the date and from that get the midnight datetime
+date = current_time_pacific.date()
+date
+mid_night_pacific = pacific.localize(datetime.combine(date, time.min)).isoformat()
+mid_night_pacific
+```
