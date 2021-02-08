@@ -650,3 +650,112 @@ The resulting data can be accessed in JavaScript like this:
 ```javascript
 const value = JSON.parse(document.getElementById('hello-data').textContent);
 ```
+
+
+
+# PANDAS INDEXING
+
+## how to change a value in a pandas table
+
+I have a sample pandas dataframe `df`
+
+```
+       id          name   state
+229  1281  something000      0
+230  1465  something001      1
+231  1467  something002      0
+232  1469  something003      1
+233  1470  something004      0
+234  1472  something005      1
+235  1474  something006      0
+236  1475  something007      1
+237  1477  something008      0
+238  1479  something009      1
+239  1480  something010      0
+240  1482  something011      1
+241  1484  something012      0
+242  1488  something013      1
+243  1489  something014      0
+244  1493  something015      1
+245  1494  something016      0
+246  1499  something017      1
+247  1500  something018      0
+248  1507  something019      1
+249  1508  something020      0
+250  1632  something021      1
+```
+
+Now i want to change the value of last row from `something021` to `something2000`
+
+If i try: since -1 indicates last row
+```
+df.loc[-1, 'name'] = something2000
+```
+and now we check what happened
+
+```
+       id          name   state
+229  1281  something000      0
+230  1465  something001      1
+231  1467  something002      0
+232  1469  something003      1
+233  1470  something004      0
+234  1472  something005      1
+235  1474  something006      0
+236  1475  something007      1
+237  1477  something008      0
+238  1479  something009      1
+239  1480  something010      0
+240  1482  something011      1
+241  1484  something012      0
+242  1488  something013      1
+243  1489  something014      0
+244  1493  something015      1
+245  1494  something016      0
+246  1499  something017      1
+247  1500  something018      0
+248  1507  something019      1
+249  1508  something020      0
+250  1632  something021      1
+-1    NaN  something2000    NaN
+```
+
+so instead of changing the last row (-1) it added a row with index -1
+
+so the right way is
+
+```
+df.loc[df.index[-1], 'name'] = something2000
+```
+
+```
+df.index[-1] gives 250
+```
+https://stackoverflow.com/questions/66096734/pandas-df-loc-1-col-sometimes-work-and-sometimes-add-extra-row-with-nan/66096764?noredirect=1#comment116873879_66096764
+
+
+# how to see a row from a dataframe
+
+## if we know the position: best way using iloc 
+```
+df.iloc[0]
+id       1281
+name     something000
+state    0
+Name: 229, dtype: object
+```
+
+## if we know the string value of the index then
+```
+df.loc[229]
+id       1281
+name     something000
+state    0
+Name: 229, dtype: object
+```
+
+https://stackoverflow.com/a/31593712
+
+## How pandas work
+
+
