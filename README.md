@@ -843,3 +843,8 @@ do:
 <!-- omit -->
 </form>
 ```
+
+# Use django-hosts for using django for multiple subdomains
+
+Note: django-hosts searches for the `regex` + `(.|$)(added by it)`.
+
