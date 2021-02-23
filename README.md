@@ -848,3 +848,8 @@ do:
 
 Note: django-hosts searches for the `regex` + `(.|$)(added by it)`.
 
+https://www.ordinarycoders.com/blog/article/django-subdomains
+## Access the subdomain on your localhost
+>If you run the server and visit 127.0.0.1:800, the main app is displaying.
+>
+>But to get to the blog app, we need to visit blog.local:8000. If you try to access this page, it does not load. That's because there is no local DNS host that matches. We need to add it to the list of hosts. 
