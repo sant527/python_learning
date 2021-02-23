@@ -759,3 +759,87 @@ https://stackoverflow.com/a/31593712
 ## How pandas work
 
 
+## How to use ROOT_URLS settings to use the same app for different domains
+
+https://www.valentinog.com/blog/django-vhosts/
+
+>**When Django receives a request it has to pick a root url configuration** from which it extracts all the paths available for our users. By default the root urlconf is defined in ROOT_URLCONF. For example our simple project has the following root url configuration:
+
+## How to handle multiple sites in Django: the middleware
+
+using middleware
+
+```
+virtual_hosts = {
+    "www.example-a.dev": "blog.urls",
+    "www.example-b.dev": "links.urls",
+    "www.example-c.dev": "links.urls",
+}
+
+
+class VirtualHostMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # let's configure the root urlconf
+        host = request.get_host()
+        request.urlconf = virtual_hosts.get(host)
+        # order matters!
+        response = self.get_response(request)
+        return response
+```
+
+```
+MIDDLEWARE = [
+    # our custom middleware
+    "django_quick_start.virtualhostmiddleware.VirtualHostMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+```
+
+## A note on url namespaces
+
+It is a good idea in Django to namespace each application's url:
+
+```
+from django.urls import path
+from .views import index
+
+app_name = "blog"
+
+urlpatterns = [path("blog/", index, name="index")]
+```
+
+Here the namespace for this app is "blog", and the index view is "index". Whenever we want to reference this view in our code we can use reverse:
+
+```
+from django.urls import reverse
+
+# omit
+view = reverse("blog:index")
+# omit
+```
+
+Now **the problem here is that with our virtual host middleware we effectively make the namespace redundant.**
+
+When we set request.urlconf in the middleware to a single URL conf, that configuration will be the only group of paths to be loaded. 
+
+So instead of:
+```
+<form action="{% url "blog:post_create" %}" method="post">
+<!-- omit -->
+</form>
+```
+do:
+```
+<form action="{% url "post_create" %}" method="post">
+<!-- omit -->
+</form>
+```
