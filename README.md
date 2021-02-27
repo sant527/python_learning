@@ -853,3 +853,30 @@ https://www.ordinarycoders.com/blog/article/django-subdomains
 >If you run the server and visit 127.0.0.1:800, the main app is displaying.
 >
 >But to get to the blog app, we need to visit blog.local:8000. If you try to access this page, it does not load. That's because there is no local DNS host that matches. We need to add it to the list of hosts. 
+
+
+
+# using django runserver_plus for ajax calls
+
+This is quite an old question, but as I saw it as reference and have a slightly different solution, I figured I might as well add my two cents.
+
+I use python manage.py runserver_plus, which comes with django extensions, and gives you an awesome debugger with the ability to open a shell at each level of the stack trace, with local variables intact. The problem here is that on ajax calls, the interface didn't show up correctly, even in the preview window. My solution was to find the calling javascript code, and on error
+
+      $.ajax({
+                url : window.location.pathname,
+                type : "POST",
+                dataType: "json",
+                data : dataPacket,
+                success : function(json) {
+                    alert('it worked!');
+                },
+                error : function(xhr,errmsg,err) {
+                    if(xhr.status == 500){
+                        var winPrint = window.open();
+                        winPrint.document.write(xhr.responseText);
+                        winPrint.document.close();
+                    }
+                });
+                
+This causes the full stack trace to replace the current window.
+Happy debugging! 
