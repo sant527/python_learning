@@ -880,3 +880,18 @@ I use python manage.py runserver_plus, which comes with django extensions, and g
                 
 This causes the full stack trace to replace the current window.
 Happy debugging! 
+
+
+
+# python standalone script debugging in console
+https://stackoverflow.com/a/41748274/2897115
+
+If you have ipython (highly, highly recommended), you can go to any point in your program and add the following lines
+
+    import IPython
+    IPython.embed()
+
+Once your program reaches that point, the `embed` command will open up a new IPython shell within that context.
+
+I really like to do that for things where I don't want to go the full pdb route.
+
