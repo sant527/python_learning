@@ -895,3 +895,56 @@ Once your program reaches that point, the `embed` command will open up a new IPy
 
 I really like to do that for things where I don't want to go the full pdb route.
 
+# Django multi language (for permanent setting)
+https://samulinatri.com/blog/django-translation/
+
+## step1:: pipenv install python-gettext
+
+## step2:: add in settings
+
+```
+#LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fi'
+```
+
+and
+
+```
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
+```
+
+## step3 make a dir called locale in BASE_DIR
+
+```
+mkdir locale
+```
+
+## step 4: Edit a template file, load the i18n tag and use the trans tag to translate a string:
+
+```
+{% load i18n %}
+<p>{% trans "Life is life." %}</p>
+```
+
+## step 5:  run the makemessages command:
+
+```
+django-admin makemessages -l fi --ignore venv
+```
+
+## step6: Edit locale/fi/LC_MESSAGES/django.po and add the translation:
+
+```
+msgid "Life is life."
+msgstr "Elämä on laiffii." # HERE
+```
+
+## compile the messages
+
+```
+django-admin compilemessages --ignore venv
+```
+
+# Django multi language (for browser based)
+
+you have to use a middleware
