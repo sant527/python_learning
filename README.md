@@ -898,7 +898,25 @@ I really like to do that for things where I don't want to go the full pdb route.
 # Django multi language (for permanent setting)
 https://samulinatri.com/blog/django-translation/
 
-## step1:: pipenv install python-gettext
+## step1:: pipenv install gettext
+
+gettext cannot be installed using pip
+
+its a GNU package in linux
+
+so login as root to the webapp
+
+```
+docker-compose -p bagnoli -f docker-compose-localhost.yml exec --user root webapp /bin/bash
+```
+
+then do
+
+```
+apt-get update
+apt-get install gettext
+```
+
 
 ## step2:: add in settings
 
