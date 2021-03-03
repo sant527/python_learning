@@ -915,6 +915,10 @@ then do
 ```
 apt-get update
 apt-get install gettext
+
+or for docker
+
+docker-compose -p bagnoli -f docker-compose-localhost.yml exec --user root webapp /bin/bash -c "apt-get update;apt-get -y install gettext"
 ```
 
 
