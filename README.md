@@ -862,6 +862,9 @@ This is quite an old question, but as I saw it as reference and have a slightly 
 
 I use python manage.py runserver_plus, which comes with django extensions, and gives you an awesome debugger with the ability to open a shell at each level of the stack trace, with local variables intact. The problem here is that on ajax calls, the interface didn't show up correctly, even in the preview window. My solution was to find the calling javascript code, and on error
 
+**NOTE DIDNT WORK IN CHROME** Says winPrint is null. Firefox it works
+
+
       $.ajax({
                 url : window.location.pathname,
                 type : "POST",
@@ -888,8 +891,13 @@ https://stackoverflow.com/a/41748274/2897115
 
 If you have ipython (highly, highly recommended), you can go to any point in your program and add the following lines
 
+** also install ipdb : `pip install ipdb`, else the code does not stop there
+
     import IPython
     IPython.embed()
+
+this will open console even with runserver in DJango
+https://stackoverflow.com/questions/1118183/how-to-debug-in-django-the-good-way
 
 Once your program reaches that point, the `embed` command will open up a new IPython shell within that context.
 
