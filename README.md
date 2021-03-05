@@ -970,3 +970,46 @@ django-admin compilemessages --ignore venv
 # Django multi language (for browser based)
 
 you have to use a middleware
+
+
+# How to get the log time in a specified timezone
+https://stackoverflow.com/a/47104004
+
+```
+
+import datetime
+import logging
+import pytz
+
+class Formatter(logging.Formatter):
+    """override logging.Formatter to use an aware datetime object"""
+    def converter(self, timestamp):
+        #dt = datetime.datetime.fromtimestamp(timestamp)
+        #we use
+        dt = datetime.datetime.utcnow()
+        current_time_utc = pytz.utc.localize(dt)
+        tzinfo = pytz.timezone('America/New_York')
+        current_time_time_zone = current_time_utc.astimezone(tzinfo)
+        #print(current_time_time_zone)
+        return current_time_time_zone
+        
+    def formatTime(self, record, datefmt=None):
+        dt = self.converter(record.created)
+        if datefmt:
+            s = dt.strftime(datefmt)
+        else:
+            try:
+                s = dt.isoformat(timespec='milliseconds')
+            except TypeError:
+                s = dt.isoformat()
+        return s
+
+
+logger = logging.root
+handler = logging.StreamHandler()
+handler.setFormatter(Formatter("%(asctime)s %(message)s"))
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
+logger.debug('test')
+
+```
