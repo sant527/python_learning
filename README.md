@@ -881,6 +881,17 @@ I use python manage.py runserver_plus, which comes with django extensions, and g
                     }
                 });
                 
+                
+for axios  use
+
+```
+           if(error.response.status == 500){
+                var winPrint2 = window.open();
+                winPrint.document.write(error.response.data);
+                winPrint.document.close();
+            }
+```
+                
 This causes the full stack trace to replace the current window.
 Happy debugging! 
 
