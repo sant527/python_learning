@@ -1103,3 +1103,177 @@ command = [python_path,filename]
 command = ['start','cmd', '@cmd','/k',python_path,filename]
 subprocess.Popen(command,shell=True)
 ```
+
+
+
+# In windows create a showtchut file .bat to run django server
+
+```
+
+D:
+cd D:\Dev\Stock-chart\backend_django
+
+set "VIRTUAL_ENV=D:\Dev\Stock-chart\backend_django\venv"
+
+set "WERKZEUG_DEBUG_PIN=off"
+
+
+if defined _OLD_VIRTUAL_PROMPT (
+
+    set "PROMPT=%_OLD_VIRTUAL_PROMPT%"
+
+) else (
+
+    if not defined PROMPT (
+
+        set "PROMPT=$P$G"
+
+    )
+
+    if not defined VIRTUAL_ENV_DISABLE_PROMPT (
+
+        set "_OLD_VIRTUAL_PROMPT=%PROMPT%"
+
+    )
+
+)
+
+if not defined VIRTUAL_ENV_DISABLE_PROMPT (
+
+    set "ENV_PROMPT="
+
+    if NOT DEFINED ENV_PROMPT (
+
+        for %%d in ("%VIRTUAL_ENV%") do set "ENV_PROMPT=(%%~nxd) "
+
+    )
+
+    )
+
+    set "PROMPT=%ENV_PROMPT%%PROMPT%"
+
+)
+
+
+
+REM Don't use () to avoid problems with them in %PATH%
+
+if defined _OLD_VIRTUAL_PYTHONHOME goto ENDIFVHOME
+
+    set "_OLD_VIRTUAL_PYTHONHOME=%PYTHONHOME%"
+
+:ENDIFVHOME
+
+
+
+set PYTHONHOME=
+
+
+
+REM if defined _OLD_VIRTUAL_PATH (
+
+if not defined _OLD_VIRTUAL_PATH goto ENDIFVPATH1
+
+    set "PATH=%_OLD_VIRTUAL_PATH%"
+
+:ENDIFVPATH1
+
+REM ) else (
+
+if defined _OLD_VIRTUAL_PATH goto ENDIFVPATH2
+
+    set "_OLD_VIRTUAL_PATH=%PATH%"
+
+:ENDIFVPATH2
+
+
+
+set "PATH=%VIRTUAL_ENV%\Scripts;%PATH%"
+
+python manage.py runserver_plus 0.0.0.0:8000 --noreload
+```
+
+and for just opening a cmd prompt with activating virtualenv
+
+```
+D:
+cd D:\Dev\Stock-chart\backend_django
+
+set "VIRTUAL_ENV=D:\Dev\Stock-chart\backend_django\venv"
+
+
+
+if defined _OLD_VIRTUAL_PROMPT (
+
+    set "PROMPT=%_OLD_VIRTUAL_PROMPT%"
+
+) else (
+
+    if not defined PROMPT (
+
+        set "PROMPT=$P$G"
+
+    )
+
+    if not defined VIRTUAL_ENV_DISABLE_PROMPT (
+
+        set "_OLD_VIRTUAL_PROMPT=%PROMPT%"
+
+    )
+
+)
+
+if not defined VIRTUAL_ENV_DISABLE_PROMPT (
+
+    set "ENV_PROMPT="
+
+    if NOT DEFINED ENV_PROMPT (
+
+        for %%d in ("%VIRTUAL_ENV%") do set "ENV_PROMPT=(%%~nxd) "
+
+    )
+
+    )
+
+    set "PROMPT=%ENV_PROMPT%%PROMPT%"
+
+)
+
+
+
+REM Don't use () to avoid problems with them in %PATH%
+
+if defined _OLD_VIRTUAL_PYTHONHOME goto ENDIFVHOME
+
+    set "_OLD_VIRTUAL_PYTHONHOME=%PYTHONHOME%"
+
+:ENDIFVHOME
+
+
+
+set PYTHONHOME=
+
+
+
+REM if defined _OLD_VIRTUAL_PATH (
+
+if not defined _OLD_VIRTUAL_PATH goto ENDIFVPATH1
+
+    set "PATH=%_OLD_VIRTUAL_PATH%"
+
+:ENDIFVPATH1
+
+REM ) else (
+
+if defined _OLD_VIRTUAL_PATH goto ENDIFVPATH2
+
+    set "_OLD_VIRTUAL_PATH=%PATH%"
+
+:ENDIFVPATH2
+
+
+
+set "PATH=%VIRTUAL_ENV%\Scripts;%PATH%"
+
+cmd
+```
