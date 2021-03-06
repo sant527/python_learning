@@ -1085,3 +1085,21 @@ logger.setLevel(logging.DEBUG)
 logger.debug('test')
 
 ```
+
+
+# Windows how to open cmd propmpt with subprocess
+
+```
+import sys
+import os
+import subprocess
+
+file = "D:\\Dev\\Stock-chart\\backend_django\\stock\\cron_jobs\\cron_job.py"
+python_path = sys.executable
+dir1 = os.path.dirname(os.path.abspath(file))
+file1 = "top50Scores.py"
+filename = os.path.join(dir1,file1)
+command = [python_path,filename]
+command = ['start','cmd', '@cmd','/k',python_path,filename]
+subprocess.Popen(command,shell=True)
+```
