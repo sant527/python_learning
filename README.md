@@ -907,12 +907,65 @@ If you have ipython (highly, highly recommended), you can go to any point in you
     import IPython
     IPython.embed()
 
+    or
+    
+    import IPython
+    IPython.embed(); exit() 
+    
+    to avoid looping
+   
+ ALSO USE 
+
 this will open console even with runserver in DJango
 https://stackoverflow.com/questions/1118183/how-to-debug-in-django-the-good-way
 
 Once your program reaches that point, the `embed` command will open up a new IPython shell within that context.
 
 I really like to do that for things where I don't want to go the full pdb route.
+
+# USING DOCKER HOW TO USE IPYTHON THING
+
+https://blog.lucasferreira.org/howto/2017/06/03/running-pdb-with-docker-and-gunicorn.html
+
+## Adding support for PDB debug
+
+We should change two things in the file docker-compose.yml to support the PDB debugger:
+
+- Add `stdin_open: true` and `tty: true` to the service configuration. These options will allow us to attach into the gunicorn running process and use the debugger.
+-  Add `-t 3600` to the gunicorn command. This will change the timeout value to 3600 seconds. The default value of 30 seconds would probably kill the process before we finish using the debugger, so this value must be increased.
+
+docker-compose.yml
+
+```
+version: '3'
+
+services:
+    demo_web:
+        build:
+            context: .
+            dockerfile: demo_web/Dockerfile
+        ports:
+            - "80:8000"
+        command: /usr/local/bin/gunicorn -w 2 -t 3600 -b :8000 app:app --reload
+        volumes:
+            - ./demo_web:/usr/src/app
+        stdin_open: true
+        tty: true
+```
+
+## Attach into the process
+
+The debugger is running inside the container, so we need to attach into the container to use it.
+
+- Find the container id using docker container ps and copy the first two or three letters of the container id column.
+- Use the command docker attach CONTAINER_ID to attach to the container.
+
+To exit you should use `CONTROL + P, CONTROL + Q`. This will detach from the container without killing it. If you use `Control + C` the container will stop.
+
+
+
+
+
 
 # Django multi language (for permanent setting)
 https://samulinatri.com/blog/django-translation/
