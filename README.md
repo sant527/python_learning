@@ -1283,16 +1283,448 @@ cmd
 
 https://stackoverflow.com/a/19942749/2897115
 
-```
-celery worker --app=cloud.celeryapp:app --loglevel=debug
-```
+Instead of using he name `celery.py` use `celeryapp.py`
 
-and rename celery.py to celeryapp.py
-
-
-
-instead of 
+and change this in the __init__.py
 
 ```
-celery -A cloud worker --loglevel=debug
+from .celeryapp import app as celery_app
+
+__all__ = ['celery_app']
 ```
+
+reset all remains same
+
+```
+celery -A boiler worker
+```
+https://stackoverflow.com/questions/66521113/django-standalone-script-cannot-import-name-celery-from-celery?noredirect=1#comment117597299_66521113
+
+# standalone DJANGO
+
+`testing_standalone_django.py`
+
+```py
+import os, sys, django
+
+"""
+project folder:
+--/home/simha/app
+	-- boiler  <-- django-admin startproject mysite
+		-- boiler
+			-- setting.py
+			-- testing_standalone_django.py  <-- current file
+	-- Pipfile
+	-- Pipefile.lock
+	-- .venv
+"""
+
+# eg: proj_path :: /home/simha/app/boiler
+proj_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(f"proj_path :: {proj_path}")
+
+# if we dont add to sys.path then django.setup() will say boiler module not found
+sys.path.append(proj_path)
+
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "boiler.settings")
+django.setup()
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+test = User.objects.all()
+for t in test:
+	print(t)
+```
+
+Note for standalone Django script to work we have to rename celery.py to celeryapp.py
+
+For 
+```
+python manager.py runserver 
+and
+celery -A boiler worker
+```
+its not required, else we will face circular reference error.
+
+https://stackoverflow.com/questions/66521113/django-standalone-script-cannot-import-name-celery-from-celery?noredirect=1#comment117597299_66521113
+
+# How to restart celery when changes are done in python files
+
+```
+pipenv install watchdog[watchmedo]
+```
+
+it stores in pipfile as
+```
+watchdog = {extras = ["watchmedo"], version = "*"}
+```
+
+and then do
+
+```
+ watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A boiler worker --concurrency=1 --loglevel=DEBUG
+```
+
+implementing in the docker it becomes
+
+```
+  celery_worker:
+    image: django:python-3.7.9-buster
+    environment:
+      - SQLPRINT=1
+      - DEBUG=1       
+    volumes:
+      - type: bind
+        source: ./python_django/Django_project_and_venv
+        target: /home/simha/app
+      - type: bind # .cache of pip will avoid download whl files again
+        source: ../DO_NOT_DELETE_LOGS/DJANGO
+        target: /home/simha/LOGS
+    command:
+      - sh
+      - -c
+      - |
+        cd src
+        pipenv run watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A boiler worker --concurrency=1 --loglevel=DEBUG
+      # https://www.distributedpython.com/2019/04/23/celery-reload/
+      # https://gist.github.com/jsheedy/fda57e82c27f612d9aa875d9d869003f
+      #pipenv run celery -A boiler worker --loglevel=debug #ensure redis-server is running in root and change backed to respective
+    depends_on:  # wait for postgresql, redis to be "ready" before starting this service
+      - postgresql
+      - redis
+    networks:  # connect to the bridge
+      - postgresql_network
+      - redis_network
+```
+
+# celery logging: How to control logging of outside celery task code
+
+- This explains how to customize celery logging
+https://www.distributedpython.com/2018/08/28/celery-logging/
+
+- This explains how to allow celery logging only when something is called by celery task and rest of the time use other logging
+https://www.distributedpython.com/2018/11/06/celery-task-logger-format/
+
+
+# How to implement a logging system to store all the logging related to a sepecific task to a specicific folder
+
+Change the folder name and dir1 as needed
+
+`task_add_logging_info.py`
+
+```
+LOG_DIRECTORY = "task1"
+import json
+def jdmp(obj):
+    return json.dumps(obj,indent=4,default=str)
+
+import pytz
+import datetime
+import logging
+class Formatter(logging.Formatter):
+    """override logging.Formatter to use an aware datetime object"""
+    def converter(self, timestamp):
+        #dt = datetime.datetime.fromtimestamp(timestamp)
+        #we use
+        dt = datetime.datetime.utcnow()
+        current_time_utc = pytz.utc.localize(dt)
+        tzinfo = pytz.timezone('America/New_York')
+        current_time_time_zone = current_time_utc.astimezone(tzinfo)
+        #print(current_time_time_zone)
+        return current_time_time_zone
+        
+    def formatTime(self, record, datefmt=None):
+        dt = self.converter(record.created)
+        if datefmt:
+            s = dt.strftime(datefmt)
+        else:
+            try:
+                s = dt.isoformat(timespec='milliseconds')
+            except TypeError:
+                s = dt.isoformat()
+        return s
+
+
+    def format(self, record):
+        try:
+            ## We want to show some code lines while logging. So that its eays to know 
+            #create a list of all the linenumber: lines 
+            lines=[]
+            with open(record.pathname) as src:
+                for index, line in enumerate(src.readlines(), start=1):
+                    if index == record.lineno:
+                        lines.append('{:4d}***: {}'.format(index, line))
+                    else:
+                        lines.append('{:7d}: {}'.format(index, line))
+            # select +/-3 lines from the current line
+            start=(record.lineno -1) - 2
+            end=(record.lineno -1) + 2
+            if record.lineno == len(lines):
+                end = record.lineno-1
+            if end > len(lines)-1:
+                end = len(lines)-1
+            if record.lineno -1 == 0:
+                start = 0
+            if start < 0:
+                start = 0
+            code = ''.join(lines[start:end+1]) #lines[start:length]
+        except Exception as e:
+            code = str(e)
+        record.codelines = code
+        record.topline = "--------------------------------------------------------------------------------------------------------------"
+        record.botline = "--------------------------------------------------------------------------------------------------------------"
+        return super(Formatter, self).format(record)
+
+
+class SQLFormatter(Formatter):
+    def format(self, record):
+
+
+        # Check if sqlparse is available for indentation
+        try:
+            import sqlparse
+        except ImportError:
+            sqlparse = None
+
+        # Remove leading and trailing whitespaces
+        sql = record.sql.strip()
+
+        if sqlparse:
+            # Indent the SQL query
+            sql = sqlparse.format(sql, reindent=True)
+
+        # Set the record's statement to the formatted query
+        record.statement = sql
+        if 'duration' in record.__dict__:
+          pass
+        else:
+          record.duration = "NA"
+        return super(SQLFormatter, self).format(record)
+
+def create_logger(created_at_constant):
+    import logging
+    from logging.handlers import RotatingFileHandler
+    import os
+    import sys
+    logger = logging.getLogger('normal_logger') # root logger
+    logger.setLevel(logging.INFO)
+    for hdlr in logger.handlers[:]:  # remove all old handlers
+        logger.removeHandler(hdlr)
+
+    proj_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # i.e src
+    dir1  = f"{proj_path}/../../LOGS"
+    dir2  = LOG_DIRECTORY
+
+    if not os.path.isdir(os.path.join(dir1,dir2)):
+        os.system(f"mkdir {os.path.join(dir1,dir2)}")
+
+    import pytz
+    import datetime
+    timestamp_tz = created_at_constant.astimezone(pytz.timezone('America/New_York')).strftime("%Y-%m-%dT%H__%M__%S_%Z")
+
+
+    dir3 = timestamp_tz
+
+    if not os.path.isdir(os.path.join(dir1,dir2,dir3)):
+        os.system(f"mkdir {os.path.join(dir1,dir2,dir3)}")
+
+    file1 = timestamp_tz+".log"
+    filename1 = os.path.join(dir1,dir2,dir3,file1)
+    #print(filename1)
+
+    # Create the rotating file handler. Limit the size to 1000000Bytes ~ 1MB .
+    handler = RotatingFileHandler(filename1, mode='a', maxBytes=1000000, backupCount=1, encoding='utf-8', delay=0)
+    #handler = logging.FileHandler(filename1,mode='w')
+    #handler = logging.StreamHandler()
+
+    #%(pathname)s[:%(lineno)s] %(name)s\n -- %(absolute_path)s\n%(topline)s\n\n%(codelines)s\n\n%(message)s"
+    handler.setFormatter(Formatter("\n%(asctime)s::::::::::::::::::::%(levelname)-8s\n%(pathname)s ::: Logger:: %(name)s\n[%(filename)s:%(lineno)s - %(funcName)30s() ]\n%(topline)s\n\n%(codelines)s\n\n%(message)s"))
+    handler.setLevel(logging.INFO)
+    logger.addHandler(handler)
+
+    logger.info("LOGGER CREATED NORMAL")
+
+def addhandlertobackendlogging(created_at_constant):
+    import logging
+    from logging.handlers import RotatingFileHandler
+    import os
+    import sys
+    logger = logging.getLogger("django.db.backends")
+    #logger = logging.getLogger("test")
+    logger.setLevel(logging.DEBUG)
+    for hdlr in logger.handlers[:]:  # remove all old handlers
+        logger.removeHandler(hdlr)
+    for filter in logger.filters[:]:  # remove all old handlers
+        logger.removeFilter(filter)
+
+    logger.handlers.clear()
+
+    proj_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # i.e src
+    dir1  = f"{proj_path}/../../LOGS"
+    dir2  = LOG_DIRECTORY
+
+    if not os.path.isdir(os.path.join(dir1,dir2)):
+        os.system(f"mkdir {os.path.join(dir1,dir2)}")
+
+    import pytz
+    import datetime
+    timestamp_tz = created_at_constant.astimezone(pytz.timezone('America/New_York')).strftime("%Y-%m-%dT%H__%M__%S_%Z")
+
+
+    dir3 = timestamp_tz
+
+    if not os.path.isdir(os.path.join(dir1,dir2,dir3)):
+        os.system(f"mkdir {os.path.join(dir1,dir2,dir3)}")
+
+    file1 = timestamp_tz+".log"
+    filename1 = os.path.join(dir1,dir2,dir3,file1)
+    #print(filename1)
+
+    # Create the rotating file handler. Limit the size to 1000000Bytes ~ 1MB .
+    #handler = RotatingFileHandler(filename1, mode='a', maxBytes=1000000, backupCount=1, encoding='utf-8', delay=0)
+    handler = logging.FileHandler(filename1,mode='a')
+    #handler = logging.StreamHandler()
+
+    # SET HANDLER FORMATTER AND LEVEL
+    handler.setFormatter(SQLFormatter('\n%(asctime)s:::::::::SQL:::::::::::%(levelname)-1s\n[%(duration).3f]\n%(statement)s'))
+    handler.setLevel(logging.DEBUG)
+    logger.addHandler(handler)
+
+
+def addhandlertorequestlogging(created_at_constant):
+    import logging
+    from logging.handlers import RotatingFileHandler
+    import os
+    import sys
+
+    import requests
+    import http.client as http_client
+    http_client.HTTPConnection.debuglevel = 1
+
+    def print_to_log(*args):
+        logging.getLogger("urllib3").debug(" ".join(args))
+    http_client.print = print_to_log
+
+
+    #logger = logging.getLogger("requests.packages.urllib3")
+    logger = logging.getLogger("urllib3")
+    #logger = logging.getLogger("test")
+    logger.setLevel(logging.DEBUG)
+    logger.propagate = False
+    for hdlr in logger.handlers[:]:  # remove all old handlers
+        logger.removeHandler(hdlr)
+    for filter in logger.filters[:]:  # remove all old handlers
+        logger.removeFilter(filter)
+
+    logger.handlers.clear()
+
+
+    proj_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # i.e src
+    dir1  = f"{proj_path}/../../LOGS"
+    dir2  = LOG_DIRECTORY
+
+    if not os.path.isdir(os.path.join(dir1,dir2)):
+        os.system(f"mkdir {os.path.join(dir1,dir2)}")
+
+    import pytz
+    import datetime
+    timestamp_tz = created_at_constant.astimezone(pytz.timezone('America/New_York')).strftime("%Y-%m-%dT%H__%M__%S_%Z")
+
+
+    dir3 = timestamp_tz
+
+    if not os.path.isdir(os.path.join(dir1,dir2,dir3)):
+        os.system(f"mkdir {os.path.join(dir1,dir2,dir3)}")
+
+    file1 = timestamp_tz+".log"
+    filename1 = os.path.join(dir1,dir2,dir3,file1)
+    #print(filename1)
+
+    # Create the rotating file handler. Limit the size to 1000000Bytes ~ 1MB .
+    #handler = RotatingFileHandler(filename1, mode='a', maxBytes=1000000, backupCount=1, encoding='utf-8', delay=0)
+    handler = logging.FileHandler(filename1,mode='a')
+    #handler = logging.StreamHandler()
+
+    # SET HANDLER FORMATTER AND LEVEL
+    handler.setFormatter(Formatter("%(asctime)s::%(levelname)-0s::%(message)s"))
+    handler.setLevel(logging.DEBUG)
+    logger.addHandler(handler)
+
+```
+
+
+and then in the tasks.py
+
+```
+import logging
+import pytz
+import datetime
+from .logging_for_warmweather_and_scedule import create_logger, addhandlertorequestlogging, addhandlertobackendlogging
+
+
+logger = logging.getLogger()
+
+def get_logger_add():
+    global logger
+    from celery._state import get_current_task
+
+    try:
+        from celery._state import get_current_task
+        get_current_task_1 = get_current_task
+    except ImportError:
+        get_current_task_1 = lambda: None
+
+    task = get_current_task_1()
+
+    if task and task.request:
+        print("TRUE CELERY TASK")
+        ########## INTIALIZING ##################
+        ## Time at which the cron job is started
+        created_at_constant =  pytz.utc.localize(datetime.datetime.utcnow())
+        create_logger(created_at_constant)
+        addhandlertorequestlogging(created_at_constant)
+        addhandlertobackendlogging(created_at_constant) #THIS IS NEEDS TO BE RUN AGAIN WHEN DJANGO IS IMPORTED. 
+        # WHEN IMPORTING DJANG IT WILL RESET THIS LOGGER
+        logger = logging.getLogger('normal_logger')
+    else:
+        print("NOT CELERY TASK")
+        logger = logging.getLogger()
+    print(logger.handlers)
+    print(logging.getLogger("django.db.backends").handlers)
+    print(logging.getLogger("urllib3").handlers)
+
+
+@celery_app.task
+def add(x, y):
+    get_logger_add()
+
+    logger.info("Testing")
+
+    hare = User.objects.all()
+
+    logger.info("QUERY")
+    for h in hare:
+        pass
+
+    logger.info("REQUESTS")
+    requests.get("http://google.com")
+    
+    # also call outside function of task
+    function_outside()
+    
+    return x * y
+
+
+def function_outside():
+   # we want this logger to be handled differently when called using celery task
+   # and called by any other Django views. 
+   # Basically get_logger_add() does that. It will check if celery task assign logger to customization
+   # else it will keep it as it is
+   logger.info("testing")
+```
+
