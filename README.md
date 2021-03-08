@@ -1277,3 +1277,22 @@ set "PATH=%VIRTUAL_ENV%\Scripts;%PATH%"
 
 cmd
 ```
+
+
+# celery import circular reference problem
+
+https://stackoverflow.com/a/19942749/2897115
+
+```
+celery worker --app=cloud.celeryapp:app --loglevel=debug
+```
+
+and rename celery.py to celeryapp.py
+
+
+
+instead of 
+
+```
+celery -A cloud worker --loglevel=debug
+```
