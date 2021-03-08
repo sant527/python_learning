@@ -1415,7 +1415,11 @@ Change the folder name and dir1 as needed
 `task_add_logging_info.py`
 
 ```
-LOG_DIRECTORY = "task1"
+# Also change dir1 as needed
+# by default its the path of the current file
+# assign dir2
+LOG_DIRECTORY = "celery_testing"
+TIMEZONE = 'America/New_York'
 import json
 def jdmp(obj):
     return json.dumps(obj,indent=4,default=str)
@@ -1430,7 +1434,7 @@ class Formatter(logging.Formatter):
         #we use
         dt = datetime.datetime.utcnow()
         current_time_utc = pytz.utc.localize(dt)
-        tzinfo = pytz.timezone('America/New_York')
+        tzinfo = pytz.timezone(TIMEZONE)
         current_time_time_zone = current_time_utc.astimezone(tzinfo)
         #print(current_time_time_zone)
         return current_time_time_zone
@@ -1523,7 +1527,7 @@ def create_logger(created_at_constant):
 
     import pytz
     import datetime
-    timestamp_tz = created_at_constant.astimezone(pytz.timezone('America/New_York')).strftime("%Y-%m-%dT%H__%M__%S_%Z")
+    timestamp_tz = created_at_constant.astimezone(pytz.timezone(TIMEZONE)).strftime("%Y-%m-%dT%H__%M__%S_%Z")
 
 
     dir3 = timestamp_tz
@@ -1572,7 +1576,7 @@ def addhandlertobackendlogging(created_at_constant):
 
     import pytz
     import datetime
-    timestamp_tz = created_at_constant.astimezone(pytz.timezone('America/New_York')).strftime("%Y-%m-%dT%H__%M__%S_%Z")
+    timestamp_tz = created_at_constant.astimezone(pytz.timezone(TIMEZONE)).strftime("%Y-%m-%dT%H__%M__%S_%Z")
 
 
     dir3 = timestamp_tz
@@ -1633,7 +1637,7 @@ def addhandlertorequestlogging(created_at_constant):
 
     import pytz
     import datetime
-    timestamp_tz = created_at_constant.astimezone(pytz.timezone('America/New_York')).strftime("%Y-%m-%dT%H__%M__%S_%Z")
+    timestamp_tz = created_at_constant.astimezone(pytz.timezone(TIMEZONE)).strftime("%Y-%m-%dT%H__%M__%S_%Z")
 
 
     dir3 = timestamp_tz
@@ -1654,7 +1658,6 @@ def addhandlertorequestlogging(created_at_constant):
     handler.setFormatter(Formatter("%(asctime)s::%(levelname)-0s::%(message)s"))
     handler.setLevel(logging.DEBUG)
     logger.addHandler(handler)
-
 ```
 
 
