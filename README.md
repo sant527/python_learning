@@ -1412,13 +1412,13 @@ https://www.distributedpython.com/2018/11/06/celery-task-logger-format/
 
 Change the folder name and dir1 as needed
 
-`task_add_logging_info.py`
+`logging_for_celery.py`
 
 ```
 # Also change dir1 as needed
 # by default its the path of the current file
 # assign dir2
-LOG_DIRECTORY = "celery_testing"
+LOG_DIRECTORY = "celery_logs"
 TIMEZONE = 'America/New_York'
 import json
 def jdmp(obj):
@@ -1507,7 +1507,8 @@ class SQLFormatter(Formatter):
           record.duration = "NA"
         return super(SQLFormatter, self).format(record)
 
-def create_logger(created_at_constant):
+def create_logger(task_id,task_name=""):
+    import pathlib
     import logging
     from logging.handlers import RotatingFileHandler
     import os
@@ -1520,23 +1521,10 @@ def create_logger(created_at_constant):
     proj_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # i.e src
     dir1  = f"{proj_path}/../../LOGS"
-    dir2  = LOG_DIRECTORY
+    dir2  = f"{LOG_DIRECTORY}/{task_name}"
 
-    if not os.path.isdir(os.path.join(dir1,dir2)):
-        os.system(f"mkdir {os.path.join(dir1,dir2)}")
-
-    import pytz
-    import datetime
-    timestamp_tz = created_at_constant.astimezone(pytz.timezone(TIMEZONE)).strftime("%Y-%m-%dT%H__%M__%S_%Z")
-
-
-    dir3 = timestamp_tz
-
-    if not os.path.isdir(os.path.join(dir1,dir2,dir3)):
-        os.system(f"mkdir {os.path.join(dir1,dir2,dir3)}")
-
-    file1 = timestamp_tz+".log"
-    filename1 = os.path.join(dir1,dir2,dir3,file1)
+    file1 = task_id+".log"
+    filename1 = os.path.join(dir1,dir2,file1)
     #print(filename1)
 
     # Create the rotating file handler. Limit the size to 1000000Bytes ~ 1MB .
@@ -1551,7 +1539,8 @@ def create_logger(created_at_constant):
 
     logger.info("LOGGER CREATED NORMAL")
 
-def addhandlertobackendlogging(created_at_constant):
+def addhandlertobackendlogging(task_id,task_name=""):
+    import pathlib
     import logging
     from logging.handlers import RotatingFileHandler
     import os
@@ -1569,23 +1558,10 @@ def addhandlertobackendlogging(created_at_constant):
     proj_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # i.e src
     dir1  = f"{proj_path}/../../LOGS"
-    dir2  = LOG_DIRECTORY
+    dir2  = f"{LOG_DIRECTORY}/{task_name}"
 
-    if not os.path.isdir(os.path.join(dir1,dir2)):
-        os.system(f"mkdir {os.path.join(dir1,dir2)}")
-
-    import pytz
-    import datetime
-    timestamp_tz = created_at_constant.astimezone(pytz.timezone(TIMEZONE)).strftime("%Y-%m-%dT%H__%M__%S_%Z")
-
-
-    dir3 = timestamp_tz
-
-    if not os.path.isdir(os.path.join(dir1,dir2,dir3)):
-        os.system(f"mkdir {os.path.join(dir1,dir2,dir3)}")
-
-    file1 = timestamp_tz+".log"
-    filename1 = os.path.join(dir1,dir2,dir3,file1)
+    file1 = task_id+".log"
+    filename1 = os.path.join(dir1,dir2,file1)
     #print(filename1)
 
     # Create the rotating file handler. Limit the size to 1000000Bytes ~ 1MB .
@@ -1599,7 +1575,8 @@ def addhandlertobackendlogging(created_at_constant):
     logger.addHandler(handler)
 
 
-def addhandlertorequestlogging(created_at_constant):
+def addhandlertorequestlogging(task_id,task_name=""):
+    import pathlib
     import logging
     from logging.handlers import RotatingFileHandler
     import os
@@ -1630,23 +1607,10 @@ def addhandlertorequestlogging(created_at_constant):
     proj_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # i.e src
     dir1  = f"{proj_path}/../../LOGS"
-    dir2  = LOG_DIRECTORY
+    dir2  = f"{LOG_DIRECTORY}/{task_name}"
 
-    if not os.path.isdir(os.path.join(dir1,dir2)):
-        os.system(f"mkdir {os.path.join(dir1,dir2)}")
-
-    import pytz
-    import datetime
-    timestamp_tz = created_at_constant.astimezone(pytz.timezone(TIMEZONE)).strftime("%Y-%m-%dT%H__%M__%S_%Z")
-
-
-    dir3 = timestamp_tz
-
-    if not os.path.isdir(os.path.join(dir1,dir2,dir3)):
-        os.system(f"mkdir {os.path.join(dir1,dir2,dir3)}")
-
-    file1 = timestamp_tz+".log"
-    filename1 = os.path.join(dir1,dir2,dir3,file1)
+    file1 = task_id+".log"
+    filename1 = os.path.join(dir1,dir2,file1)
     #print(filename1)
 
     # Create the rotating file handler. Limit the size to 1000000Bytes ~ 1MB .
@@ -1667,12 +1631,12 @@ and then in the tasks.py
 import logging
 import pytz
 import datetime
-from .logging_for_warmweather_and_scedule import create_logger, addhandlertorequestlogging, addhandlertobackendlogging
-
-
+from boiler.logging_for_celery import create_logger, addhandlertorequestlogging, addhandlertobackendlogging
 logger = logging.getLogger()
 
-def get_logger_add():
+from boiler.settings import pp_odir_getobject
+
+def get_logger_celery():
     global logger
     from celery._state import get_current_task
 
@@ -1683,20 +1647,23 @@ def get_logger_add():
         get_current_task_1 = lambda: None
 
     task = get_current_task_1()
-
+    
     if task and task.request:
+        print(json.dumps(pp_odir_getobject(task),default=str,indent=4))
+        print(json.dumps(pp_odir_getobject(task.request),default=str,indent=4))
         print("TRUE CELERY TASK")
         ########## INTIALIZING ##################
         ## Time at which the cron job is started
-        created_at_constant =  pytz.utc.localize(datetime.datetime.utcnow())
-        create_logger(created_at_constant)
-        addhandlertorequestlogging(created_at_constant)
-        addhandlertobackendlogging(created_at_constant) #THIS IS NEEDS TO BE RUN AGAIN WHEN DJANGO IS IMPORTED. 
+        task_name = task.name
+        task_id= task.request.id
+        print(f"task.name :: {task_name}")
+        print(f"task.request.id :: {task_id}")
+
+        create_logger(task_id,task_name)
+        addhandlertorequestlogging(task_id,task_name)
+        addhandlertobackendlogging(task_id,task_name) #THIS IS NEEDS TO BE RUN AGAIN WHEN DJANGO IS IMPORTED. 
         # WHEN IMPORTING DJANG IT WILL RESET THIS LOGGER
-        logger = logging.getLogger('normal_logger')
-    else:
-        print("NOT CELERY TASK")
-        logger = logging.getLogger()
+        logger = logging.getLogger("normal_logger")
     print(logger.handlers)
     print(logging.getLogger("django.db.backends").handlers)
     print(logging.getLogger("urllib3").handlers)
@@ -1704,7 +1671,7 @@ def get_logger_add():
 
 @celery_app.task
 def add(x, y):
-    get_logger_add()
+    get_logger_celery()
 
     logger.info("Testing")
 
@@ -1724,6 +1691,7 @@ def add(x, y):
 
 
 def function_outside():
+   get_logger_celery()
    # we want this logger to be handled differently when called using celery task
    # and called by any other Django views. 
    # Basically get_logger_add() does that. It will check if celery task assign logger to customization
