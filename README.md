@@ -1761,3 +1761,13 @@ t.mod_with_late_dec()
 t.mod_without_dec_error()
 t.sound_practice()
 ```
+
+# how to debug celery using ipdb
+
+celery offers officially rdb and telnet
+
+https://medium.com/@kennethjiang/debug-celery-tasks-in-ipdb-6f71506e6430
+
+but we want to use ipdb
+
+so use apply() instead of delay()
