@@ -1985,3 +1985,6 @@ logging.getLogger('asyncio').setLevel(logging.WARNING)
   [1]: https://docs.python.org/3/library/asyncio.html
   [2]: https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-LOGGING
 
+
+# how to save previos value of select
+https://stackoverflow.com/a/4076852
