@@ -1887,3 +1887,69 @@ def task1()
 def task2()
     pass
 ```
+
+# Django ipd docker
+https://gist.githubusercontent.com/katylava/3559c29160573488a7bbccb474b55356/raw/aa2da70090da1069e06c8eaadb445faabcc9697e/README.md
+## With `docker-compose up`
+
+```
+$ docker-compose up
+Starting dockeripdb_web_1
+Attaching to dockeripdb_web_1
+
+# ...After loading http://192.168.99.100:8000 in browser...
+
+web_1  | Performing system checks...
+web_1  |
+web_1  | System check identified no issues (0 silenced).
+web_1  | August 07, 2017 - 19:58:48
+web_1  | Django version 1.11.3, using settings None
+web_1  | Starting development server at http://0.0.0.0:8000/
+web_1  | Quit the server with CONTROL-C.
+web_1  | > /dockeripdb/app.py(23)index()
+web_1  |      22     import ipdb; ipdb.set_trace()
+web_1  | ---> 23     return HttpResponse('Hello World')
+web_1  |      24
+web_1  |
+web_1  | ipdb> Internal Server Error: /
+web_1  | Traceback (most recent call last):
+web_1  |   File "/usr/local/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
+web_1  |     response = get_response(request)
+web_1  |   File "/usr/local/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+web_1  |     response = self._get_response(request)
+web_1  |   File "/usr/local/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
+web_1  |     response = wrapped_callback(request, *callback_args, **callback_kwargs)
+web_1  |   File "/usr/local/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
+web_1  |     response = wrapped_callback(request, *callback_args, **callback_kwargs)
+web_1  |   File "app.py", line 23, in index
+web_1  |     return HttpResponse('Hello World')
+web_1  |   File "app.py", line 23, in index
+web_1  |     return HttpResponse('Hello World')
+web_1  |   File "/usr/local/lib/python3.5/bdb.py", line 48, in trace_dispatch
+web_1  |     return self.dispatch_line(frame)
+web_1  |   File "/usr/local/lib/python3.5/bdb.py", line 67, in dispatch_line
+web_1  |     if self.quitting: raise BdbQuit
+web_1  | bdb.BdbQuit
+```
+
+## With `docker-compose run --service-ports web`
+
+```
+$ docker-compose run --service-ports web
+Performing system checks...
+
+System check identified no issues (0 silenced).
+August 07, 2017 - 20:01:33
+Django version 1.11.3, using settings None
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+
+# ...After loading http://192.168.99.100:8000 in browser...
+
+> /dockeripdb/app.py(23)index()
+     22     import ipdb; ipdb.set_trace()
+---> 23     return HttpResponse('Hello World')
+     24
+
+ipdb>
+```
