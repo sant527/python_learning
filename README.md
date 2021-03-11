@@ -1771,3 +1771,33 @@ https://medium.com/@kennethjiang/debug-celery-tasks-in-ipdb-6f71506e6430
 but we want to use ipdb
 
 so use apply() instead of delay()
+
+
+# How to run a script inside IPython
+
+```
+import os
+filepath='C:\\Users\\User\\FolderWithPythonScript' 
+os.chdir(filepath)
+%run pyFileInThatFilePath.py
+```
+OR
+
+```
+%run ./my_script.py
+```
+
+# python know current directory
+
+```
+To get the current working directory use
+
+import os
+cwd = os.getcwd()
+```
+
+To get the full path to the directory a Python file is contained in, write this in that file:
+```
+import os 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+```
