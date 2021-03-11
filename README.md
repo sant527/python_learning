@@ -1888,7 +1888,7 @@ def task2()
     pass
 ```
 
-# Django ipd docker
+# Another way of Django ipd docker
 https://gist.githubusercontent.com/katylava/3559c29160573488a7bbccb474b55356/raw/aa2da70090da1069e06c8eaadb445faabcc9697e/README.md
 ## With `docker-compose up`
 
@@ -1953,3 +1953,35 @@ Quit the server with CONTROL-C.
 
 ipdb>
 ```
+
+But instead of this use stdin in yml file and then docker attach
+
+But this gives how to use it with run
+
+# How can I avoid “Using selector: EpollSelector” log message in Django?
+
+https://stackoverflow.com/questions/60503705/how-can-i-avoid-using-selector-epollselector-log-message-in-django
+
+This message is from the [`asyncio`][1] library that comes with Python 3. You can configure its logging by modifying the [`LOGGING`][2] configuration:
+
+```
+LOGGING = {
+    'version': 1,
+    'loggers': {
+        'asyncio': {
+            'level': 'WARNING',
+        },
+    },
+}
+```
+
+If you're not using Django, you can use this line of code:
+
+```
+import logging
+logging.getLogger('asyncio').setLevel(logging.WARNING)
+```
+
+  [1]: https://docs.python.org/3/library/asyncio.html
+  [2]: https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-LOGGING
+
