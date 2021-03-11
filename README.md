@@ -1801,3 +1801,53 @@ To get the full path to the directory a Python file is contained in, write this 
 import os 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 ```
+
+# How to use a variable inside a regular expression?
+
+https://stackoverflow.com/a/55810892
+
+From python 3.6 on you can also use [Literal String Interpolation][1], "f-strings". In your particular case the solution would be:
+
+    if re.search(rf"\b(?=\w){TEXTO}\b(?!\w)", subject, re.IGNORECASE):
+        ...do something
+
+EDIT:
+
+Since there have been some questions in the comment on how to deal with special characters I'd like to extend my answer:
+
+**raw strings ('r'):**
+
+One of the main concepts you have to understand when dealing with special characters in regular expressions is to distinguish between string literals and the regular expression itself. It is very well explained [here][2]: 
+
+In short:
+
+Let's say instead of finding a word boundary `\b` after `TEXTO` you want to match the string `\boundary`. The you have to write:
+
+    TEXTO = "Var"
+    subject = r"Var\boundary"
+    
+    if re.search(rf"\b(?=\w){TEXTO}\\boundary(?!\w)", subject, re.IGNORECASE):
+        print("match")
+
+This only works because we are using a raw-string (the regex is preceded by 'r'), otherwise we must write "\\\\\\\\boundary" in the regex (four backslashes). Additionally, without '\r', \b' would not converted to a word boundary anymore but to a backspace!
+
+**re.escape**:
+
+Basically puts a backspace in front of any special character. Hence, if you expect a special character in TEXTO, you need to write:
+
+    if re.search(rf"\b(?=\w){re.escape(TEXTO)}\b(?!\w)", subject, re.IGNORECASE):
+        print("match")
+
+NOTE: For any version >= python 3.7: `!`, `"`, `%`, `'`, `,`, `/`, `:`, `;`, `<`, `=`, `>`, `@`, and `` ` `` are not escaped. Only special characters with meaning in a regex are still escaped. `_` is not escaped since Python 3.3.(s. [here][3])
+
+**Curly braces:**
+
+If you want to use quantifiers within the regular expression using f-strings, you have to use double curly braces. Let's say you want to match TEXTO followed by exactly 2 digits:
+
+    if re.search(rf"\b(?=\w){re.escape(TEXTO)}\d{{2}}\b(?!\w)", subject, re.IGNORECASE):
+        print("match")
+
+
+  [1]: https://www.python.org/dev/peps/pep-0498/
+  [2]: https://docs.python.org/3/howto/regex.html#the-backslash-plague
+  [3]: https://docs.python.org/3/library/re.html#re.escape
