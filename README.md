@@ -1988,3 +1988,15 @@ logging.getLogger('asyncio').setLevel(logging.WARNING)
 
 # how to save previos value of select
 https://stackoverflow.com/a/4076852
+```
+$(document).ready(function(){
+  var sel = $("#sel");
+  sel.data("prev",sel.val());
+
+  sel.change(function(data){
+     var jqThis = $(this);
+     alert(jqThis.data("prev"));
+     jqThis.data("prev",jqThis.val());
+  });
+});
+```
