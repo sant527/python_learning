@@ -1851,3 +1851,13 @@ If you want to use quantifiers within the regular expression using f-strings, yo
   [1]: https://www.python.org/dev/peps/pep-0498/
   [2]: https://docs.python.org/3/howto/regex.html#the-backslash-plague
   [3]: https://docs.python.org/3/library/re.html#re.escape
+
+
+# match a string from a list in python
+
+Use re.search function along with the list comprehension.
+```
+>>> teststr = ['1 FirstString', '2x Sec String', '3rd String', 'x forString', '5X fifth']
+>>> [i for i in teststr if re.search(r'\d+[xX]', i) ]
+['2x Sec String', '5X fifth']
+```
