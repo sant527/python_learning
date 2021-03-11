@@ -1861,3 +1861,29 @@ Use re.search function along with the list comprehension.
 >>> [i for i in teststr if re.search(r'\d+[xX]', i) ]
 ['2x Sec String', '5X fifth']
 ```
+
+
+# celery calling a celery task from another celery task as normal function
+
+```
+@celery.task
+def task1()
+    task2()
+    
+@celery.task
+def task2()
+    pass
+```
+this is not the proper way, task2 will be created as a dangling task, no task id
+
+
+the proper way is use task2.run() (then task2 is run in the task of task1)
+```
+@celery.task
+def task1()
+    task2.run()
+    
+@celery.task
+def task2()
+    pass
+```
