@@ -2023,3 +2023,32 @@ then use import json; print(json.dumps(dict(Form.__dict__),indent=4,default=str)
 
 
 ```
+
+## But __dict__ and vars miss some variables
+
+so we have to use dir(obj)
+```python
+import json; print(json.dumps(dict( (key, getattr(OBJREPLACE, key) ) for key in dir(OBJREPLACE) ),indent=4,default=str))
+```
+but we dont want to see "__" variables so use
+
+```python
+import json; print(json.dumps(dict((key, getattr(filter_, key)) if not key.startswith("__") else () for key in dir(filter_)),indent=4,default=str))
+```
+
+
+## DJango ipdb does not stop 
+
+https://stackoverflow.com/a/28277178/2897115
+
+I've been through the same problem.
+
+Try something like `python -m pdb ./manage.py runserver --nothreading --noreload 127.0.0.1:8080`. It solved the issue for me.
+
+It seems that breakpoints with PDB are thread-specific, and the `--nothreading` and `--noreload` options are necessary to avoid some forking that may confuse PDB. This is also why `set_trace` works, as it's called directly inside the thread of interest.
+
+What worked for me is
+
+```python
+python manage.py runserver  --nothreading 0.0.0.0:8009
+```
