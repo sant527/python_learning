@@ -2033,8 +2033,10 @@ import json; print(json.dumps(dict( (key, getattr(OBJREPLACE, key) ) for key in 
 but we dont want to see "__" variables so use
 
 ```python
-import json; print(json.dumps(dict((key, getattr(filter_, key)) if not key.startswith("__") else () for key in dir(filter_)),indent=4,default=str))
+import json; print(json.dumps(dict((key, getattr(filter_, key)) if not key.startswith("__") else (1,1) for key in dir(filter_)),indent=4,default=str))
 ```
+
+Note: `else (1,1)` is just anything. we have to show else
 
 
 ## DJango ipdb does not stop 
