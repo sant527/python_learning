@@ -2019,7 +2019,7 @@ ipdb> type(Form.__dict__)
 
 ipdb> dict(Form.__dict__)
 
-then use print(json.dumps(dict(Form.__dict__),indent=4,default-str)
+then use import json; print(json.dumps(dict(Form.__dict__),indent=4,default=str))
 
 
 ```
