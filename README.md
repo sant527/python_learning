@@ -2000,3 +2000,26 @@ $(document).ready(function(){
   });
 });
 ```
+
+
+# how to use vars or __dict__ or vars  
+
+```python
+vars(Form) is same as Form.__dict__
+
+it retuns a mappingdict
+
+ipdb> Form.__dict__                                                                                                                                                 
+mappingproxy({'declared_fields': {'id': <django.forms.fields.DecimalField object at 0x7fdff9c9a160>, 'ids': <django_filters.filters.BaseCSVFilter.__init__.<locals>.ConcreteCSVField object at 0x7fdff90fa5c0>, 'ordering': <django.forms.fields.CharField object at 0x7fdff923be10>, 'auto_complete': <django.forms.fields.CharField object at 0x7fdff923b198>, 'any_field': <django.forms.fields.CharField object at 0x7fdff923b320>, 'role': <django.forms.fields.CharField object at 0x7fdff923b2b0>}, '__module__': 'django.forms.widgets', '__doc__': None, 'media': <property object at 0x7fdff932c3b8>, 'base_fields': {'id': <django.forms.fields.DecimalField object at 0x7fdff9c9a160>, 'ids': <django_filters.filters.BaseCSVFilter.__init__.<locals>.ConcreteCSVField object at 0x7fdff90fa5c0>, 'ordering': <django.forms.fields.CharField object at 0x7fdff923be10>, 'auto_complete': <django.forms.fields.CharField object at 0x7fdff923b198>, 'any_field': <django.forms.fields.CharField object at 0x7fdff923b320>, 'role': <django.forms.fields.CharField object at 0x7fdff923b2b0>}})
+
+ipdb> type(Form.__dict__)                                                                                                                                           
+<class 'mappingproxy'>
+
+# convert to dict
+
+ipdb> dict(Form.__dict__)
+
+then use print(json.dumps(dict(Form.__dict__),indent=4,default-str)
+
+
+```
