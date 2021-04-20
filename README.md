@@ -2054,3 +2054,8 @@ What worked for me is
 ```python
 python manage.py runserver  --nothreading 0.0.0.0:8009
 ```
+
+
+## Django how to use group by
+
+https://hakibenita.com/django-group-by-sql
