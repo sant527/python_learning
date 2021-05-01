@@ -2059,3 +2059,372 @@ python manage.py runserver  --nothreading 0.0.0.0:8009
 ## Django how to use group by
 
 https://hakibenita.com/django-group-by-sql
+
+
+
+## create dictionary from list of variables
+https://stackoverflow.com/questions/9495262/create-dictionary-from-list-of-variables
+
+```python
+pip install sorcery
+```
+
+```python
+from sorcery import dict_of
+
+a = 1
+b = 2
+c = 3
+d = dict_of(a, b, c)
+print(d)
+# {'a': 1, 'b': 2, 'c': 3}
+```
+
+# HOW to access website on localhost from outside
+# ngrok
+
+use ngrok to show someone our webapplication from the pc
+
+https://stackoverflow.com/a/54679176/2897115
+
+for this all the django urls should start with /api
+
+and also
+
+```
+STATIC_URL = "/api/static/"
+
+MEDIA_URL = "/api/media/"
+```
+and in nginx use
+
+```
+upstream webapp {
+    server webapp:8000;
+}
+
+upstream nodejs {
+    server node:3000;
+}
+
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://nodejs;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+    }
+
+    location /api {
+        proxy_pass http://webapp;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+    }
+
+}
+```
+
+and then run ngrok 
+
+```
+  ngrok:
+    image: wernight/ngrok:latest
+    ports:
+      - 4040:4040
+    environment:
+      NGROK_PROTOCOL: http
+      NGROK_PORT: nginx:80
+      NGROK_AUTH: "1rsPdDdjitZKvEuPGGN3QzX9pmx_7vBUN76poPdd7voB9sUXQ" # get the token https://dashboard.ngrok.com/get-started/your-authtoken
+      NGROK_REGION: "ap"
+    depends_on:
+      - nginx
+    networks:
+      - nginx_network
+```
+
+But django to serve static and media files
+
+add this
+
+```
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+```
+
+and also make all urls begin with /api
+
+```
+from django.contrib import admin
+from django.urls import path, include
+from rest_framework import routers
+from django.urls import re_path
+from django.conf.urls import url
+from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
+
+from main.api import RegisterAPI, LoginAPI, UserAPI
+from knox import views as knox_views
+
+from main import views
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+router = routers.DefaultRouter()
+router.register(r"profiles", views.UserProfileViewSet)
+
+
+urlpatterns = [
+    path("api/dmin/", admin.site.urls),
+    path("api/index/", TemplateView.as_view(template_name="index.html")),
+    path("api/restauth/", include("rest_framework.urls", namespace="restauth")),
+    path("api/", include(router.urls)),
+    path("api/auth", include("knox.urls")),
+    path("api/auth/register", RegisterAPI.as_view()),
+    path("api/auth/login", LoginAPI.as_view()),
+    path("api/auth/user", UserAPI.as_view()),
+    path("api/auth/logout", knox_views.LogoutView.as_view(), name="knox_logout"),
+    path(
+        "api/password_reset/",
+        include("django_rest_passwordreset.urls", namespace="password_reset"),
+    ),
+    url(r"api/^(?:.*)/?$", TemplateView.as_view(template_name="index.html")),
+    # path(
+    #     "passwordreset/verifytoken/",
+    #     views.CustomPasswordTokenVerificationView.as_view(),
+    #     name="password_reset_verify_token",
+    # ),
+]
+```
+
+in reactjs use in index.js as
+
+```
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import * as serviceWorker from "./serviceWorker";
+
+// SUGGESTION BEGINS: TO ADD THIS
+
+import axios from 'axios';
+
+axios.defaults.baseURL = `http://${window.location.hostname}`
+
+// SUGGESTION ENDS: TO ADD THIS
+
+ReactDOM.render(
+  <React.Fragment>
+    <App />
+  </React.Fragment>,
+  document.getElementById("root")
+);
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
+```
+
+and final docker file
+```
+version: "3.7"
+services:
+
+  nginx:
+    image: nginx:1.18.0-alpine
+    ports:
+      - 8000:80
+    volumes:
+      - ./nginx/localhost/conf.d:/etc/nginx/conf.d
+    depends_on:  # <-- wait for webapp to be "ready" before starting this service
+      - webapp
+      - node
+    networks:  # connect to the bridge
+      - nginx_network
+
+
+  postgresql:
+    image: "postgres:12-alpine"
+    volumes:
+      - type: bind
+        source: ../DO_NOT_DELETE_postgres_data
+        target: /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: 'admin' # this is optional because default it posstgres
+      POSTGRES_PASSWORD: 'admin'
+      POSTGRES_DB: 'elemzy' # this is optional because default it postgres
+      PGDATA: '/var/lib/postgresql/data/pgdata'
+    networks:  # connect to the bridge
+      - postgresql_network
+    command: ["postgres", "-c", "log_statement=all","-c", "log_destination=stderr"]
+
+
+  webapp:
+    #image: "django:python-3.7.7-alpin3.11-with-builddeps"
+    image: "python-node-buster:nikolaik-python3.7-nodejs15"
+    environment:
+      - SQLPRINT=1
+      - DEBUG=1
+      - WERKZEUG_DEBUG_PIN=off
+      - POSTGRES_REMOTE=
+      - PYTHONBREAKPOINT=ipdb.set_trace
+    volumes:
+      - type: bind
+        source: ./python_django/Django_project_and_venv
+        target: /home/simha/app
+      - type: bind
+        source: ./python_django/Pipenv_cache_directory/.cache
+        target: /home/simha/.cache
+      - type: bind # .cache of pipenv will avoid to download the .whl files again
+        source: ./python_django/Pipenv_cache_directory/.cache/pip-tools
+        target: /home/simha/.cache/pip-tools
+      - type: bind # .cache of pipenv will avoid to download the .whl files again
+        source: ./python_django/Pipenv_cache_directory/.cache/pipenv
+        target: /home/simha/.cache/pipenv
+      - type: bind # .cache of pip will avoid download whl files again  
+        source: ./python_django/Pip_cache/.cache/pip
+        target: /home/simha/.cache/pip
+      - type: bind # .cache of pip will avoid download whl files again
+        source: ../DO_NOT_DELETE_LOGS/DJANGO
+        target: /home/simha/LOGS
+      - type: bind # .cache of pip will avoid download whl files again
+        source: ../DO_NOT_DELETE_MEDIA_DJANGO
+        target: /home/simha/app/src/media
+############################## ********** APP SPECIFIC  ******** #########################
+      - type: bind # .cache of pip will avoid download whl files again  
+        source: ./python_django/Django_external_config
+        target: /home/simha/app/src/reon/external_config
+    ports:
+      - "8001:8000"
+    command:
+      - sh
+      - -c
+      - |
+        cd src/
+        pipenv run python manage.py runserver 0.0.0.0:8000
+    stdin_open: true   # Add this line into your service
+    tty: true   # Add this line into your service
+    networks:
+      - postgresql_network
+      - nginx_network
+    depends_on:
+      - postgresql
+
+
+  jupyter:
+    # Jupyter needs buildversion: Error loading shared library libzmq.so.5
+    image: "python-node-buster:nikolaik-python3.7-nodejs15"
+    environment:
+      - SQLPRINT=1
+      - JUPYTER_PASS=1
+      - DEBUG=1
+      - POSTGRES_REMOTE=0
+      - PYTHONBREAKPOINT=ipdb.set_trace
+    #image: "django:python-3.7.7-alpin3.11"
+    volumes:
+      - type: bind
+        source: ./python_django/Django_project_and_venv
+        target: /home/simha/app
+      - type: bind
+        source: ./python_django/Pipenv_cache_directory/.cache
+        target: /home/simha/.cache
+      - type: bind # We want to also set some configurations for jupyter
+        source: ./python_django/jupyter/.jupyter
+        target: /home/simha/.jupyter
+      - type: bind # .cache of pipenv will avoid to download the .whl files again
+        source: ./python_django/Pipenv_cache_directory/.cache/pip-tools
+        target: /home/simha/.cache/pip-tools
+      - type: bind # .cache of pipenv will avoid to download the .whl files again
+        source: ./python_django/Pipenv_cache_directory/.cache/pipenv
+        target: /home/simha/.cache/pipenv
+      - type: bind # .cache of pip will avoid download whl files again
+        source: ./python_django/Pip_cache/.cache/pip
+        target: /home/simha/.cache/pip
+      - type: bind # .cache of pip will avoid download whl files again
+        source: ../DO_NOT_DELETE_LOGS/DJANGO
+        target: /home/simha/LOGS
+      - type: bind # .cache of pip will avoid download whl files again
+        source: ../DO_NOT_DELETE_MEDIA_DJANGO
+        target: /home/simha/app/src/media
+############################## ********** APP SPECIFIC  ******** #########################
+      - type: bind # .cache of pip will avoid download whl files again  
+        source: ./python_django/Django_external_config
+        target: /home/simha/app/src/reon/external_config
+      # NOTE we have to import the .env from the host. This is for safety purpose 
+    ports:
+      - "8888:8888"
+    command:
+      - sh
+      - -c
+      - |
+        cd src/
+        pipenv run python manage.py shell_plus --notebook
+    networks:
+      - postgresql_network
+    depends_on:
+      - postgresql
+
+
+
+  pgadmin:
+    image: dpage/pgadmin4:5.2
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: 80
+    volumes:
+      - type: bind
+        source: ../DO_NOT_DELETE_pgadmin_data
+        target: /var/lib/pgadmin
+    ports:
+      - "8080:80"
+    networks:
+      - postgresql_network
+
+
+  node:
+    image: "python-node-buster:nikolaik-python3.7-nodejs15"
+    volumes:
+      - type: bind
+        source: ./node_reacts/reactjs_app
+        target: /home/simha/app
+    ports:
+      - "3000:3000"
+    stdin_open: true  #https://stackoverflow.com/a/60902143/2897115
+    command:
+      - sh
+      - -c
+      - |
+        npm start
+    networks:
+      - nginx_network
+
+
+  ngrok:
+    image: wernight/ngrok:latest
+    ports:
+      - 4040:4040
+    environment:
+      NGROK_PROTOCOL: http
+      NGROK_PORT: nginx:80
+      NGROK_AUTH: "XXXXXXXXXX" # get the token https://dashboard.ngrok.com/get-started/your-authtoken
+      NGROK_REGION: "ap"
+    depends_on:
+      - nginx
+    networks:
+      - nginx_network
+
+networks:
+  postgresql_network:
+    driver: bridge
+  nginx_network:
+    driver: bridge
+```
+
