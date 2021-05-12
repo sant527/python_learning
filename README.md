@@ -2428,3 +2428,13 @@ networks:
     driver: bridge
 ```
 
+## Specify an SSH key for git push for a given domain
+https://stackoverflow.com/a/62278407/2897115
+
+Configure your repository using `git config`
+
+```
+git config --add --local core.sshCommand 'ssh -i <<<PATH_TO_SSH_KEY>>>'
+```
+This applies to your *local repository* only.
+
