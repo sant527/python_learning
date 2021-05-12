@@ -2438,3 +2438,4 @@ git config --add --local core.sshCommand 'ssh -i <<<PATH_TO_SSH_KEY>>>'
 ```
 This applies to your *local repository* only.
 
+![](https://i.imgur.com/cejrX4w.png)
