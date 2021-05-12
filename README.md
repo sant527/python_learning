@@ -2439,3 +2439,16 @@ git config --add --local core.sshCommand 'ssh -i <<<PATH_TO_SSH_KEY>>>'
 This applies to your *local repository* only.
 
 ![](https://i.imgur.com/cejrX4w.png)
+
+
+# sublime text how to exclude folder from Find in Files
+
+preference, settings
+add this
+
+```
+    "binary_file_patterns": ["*.jpg", "*.jpeg", "*.png", "*.gif", "*.ttf", "*.tga", "*.dds", "*.ico", "*.eot", "*.pdf", "*.swf", "*.jar", "*.zip","node_modules/", "coverage/", "tmp/cache/",".venv/"]
+```
+
+BTW, most of the solutions I've found to this problem focus on folder_exclude_patterns, and overlook that binary_file_patterns can specify folder patterns, probably due to its name and Sublime's default settings for it.
+
