@@ -2439,3 +2439,23 @@ git config --add --local core.sshCommand 'ssh -i <<<PATH_TO_SSH_KEY>>>'
 This applies to your *local repository* only.
 
 ![](https://i.imgur.com/cejrX4w.png)
+		       
+		       
+		       
+# Bootstrap 4 correct way to use row and col classes [duplicate]
+
+> For the second row instead of that should I have to wrap that button inside a column. Like this
+
+Yes, only a Bootstrap column is allowed to be a direct child of a Bootstrap row.
+
+So, in every Bootstrap row, you **must have at least one Bootstrap column** and all of your content must go into Bootstrap columns and never into Bootstrap rows directly.
+
+This is because Bootstrap rows and columns are designed to work in pairs i.e. no content may ever be placed directly into a Bootstrap row. Only Bootstrap columns may be direct children of Bootstrap rows.
+
+Reference: 
+
+https://getbootstrap.com/docs/4.0/layout/grid/
+
+
+		       
+		       
