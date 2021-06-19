@@ -2443,6 +2443,8 @@ This applies to your *local repository* only.
 		       
 		       
 # Bootstrap 4 correct way to use row and col classes [duplicate]
+		       
+https://stackoverflow.com/a/49187634/2897115
 
 > For the second row instead of that should I have to wrap that button inside a column. Like this
 
