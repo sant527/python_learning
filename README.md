@@ -2459,5 +2459,7 @@ Reference:
 https://getbootstrap.com/docs/4.0/layout/grid/
 
 
-		       
-		       
+
+# python and Django:
+
+Python >= 3.6 installed on your machine. Django 3.0 is only compatible with Python 3.6 and up because it makes use of the async and await keywords.
