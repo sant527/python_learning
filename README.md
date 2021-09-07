@@ -3160,6 +3160,10 @@ export { axiosInstance, baseURL };
 ```
 	
 ## replacing the url
+
+the media url needs to be appended /django
+
+so do this
 ```
 <img
   src={`${baseURL}${rowData.photo.replace(/^.*\/\/[^/]+/, "")}`}
