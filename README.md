@@ -2463,3 +2463,706 @@ https://getbootstrap.com/docs/4.0/layout/grid/
 # python and Django:
 
 Python >= 3.6 installed on your machine. Django 3.0 is only compatible with Python 3.6 and up because it makes use of the async and await keywords.
+	
+	
+# python run from subfolder without changing the urls
+	
+i.e localhost:8000/django/
+	
+## docker compose file
+	
+```
+# My version of docker = 18.09.4-ce
+# Compose file format supported till version 18.06.0+ is 3.7
+version: "3.7"
+services:
+  nginx:
+    image: nginx:1.18.0-alpine
+    ports:
+      - 8025:80
+    volumes:
+      - ./nginx/localhost/conf.d:/etc/nginx/conf.d
+      - ../DO_NOT_DELETE_CODING_FOLDER/backend_django/staticfiles:/staticfiles
+      - ../DO_NOT_DELETE_MEDIA_DJANGO:/mediafiles
+    depends_on:
+      - webapp
+    networks:
+      - nginx_network
+
+  postgresql:
+    image: "postgres:13-alpine"
+    restart: always
+    volumes:
+      - type: bind
+        source: ../DO_NOT_DELETE_postgres_data
+        target: /var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: gauranga
+      POSTGRES_USER: simha
+      POSTGRES_PASSWORD: krishna
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    networks:
+      - postgresql_network
+
+  phppgadmin:
+    image: "bitnami/phppgadmin:7.13.0"
+    environment:
+      DATABASE_HOST: "postgresql"
+      DATABASE_SSL_MODE: "disable"
+    networks:
+      - nginx_network
+      - postgresql_network
+
+  redis:
+    image: "redis:5.0.9-alpine3.11"
+    command: redis-server
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks: # connect to the bridge
+      - redis_network
+
+  celery_worker:
+    image: "python3.9-nodejs16-buster:nikolaik-python3.9-nodejs16"
+    environment:
+      - SQLPRINT=1
+      - DEBUG=1
+    volumes:
+      - type: bind
+        source: ../DO_NOT_DELETE_CODING_FOLDER/backend_django
+        target: /home/simha/app
+      ############################## ********** APP SPECIFIC  ******** #########################
+      # ensure external_config folder exists on host else it will create folder with root:root on the host
+      # but on the docker it will be created using simha:users
+      - type: bind
+        source: ./python_django/Django_external_config
+        target: /home/simha/app/petsproject/external_config
+    command:
+      - sh
+      - -c
+      - |
+        pipenv run celery -A petsproject worker --loglevel=debug #ensure redis-server is running in root and change backed to respective
+      #pipenv run watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A boiler worker --concurrency=1 --loglevel=DEBUG
+      # https://www.distributedpython.com/2019/04/23/celery-reload/
+      # https://gist.github.com/jsheedy/fda57e82c27f612d9aa875d9d869003f
+      #pipenv run celery -A boiler worker --loglevel=debug #ensure redis-server is running in root and change backed to respective
+    depends_on: # wait for postgresql, redis to be "ready" before starting this service
+      - redis
+      - postgresql
+    networks: # connect to the bridge
+      - redis_network
+      - postgresql_network
+
+  webapp:
+    image: "python3.9-nodejs16-buster:nikolaik-python3.9-nodejs16"
+    environment:
+      - SQLPRINT=1
+      - DEBUG=1
+      - WERKZEUG_DEBUG_PIN=off
+      - PYTHONBREAKPOINT=ipdb.set_trace
+    volumes:
+      - type: bind
+        source: ../DO_NOT_DELETE_CODING_FOLDER/backend_django
+        target: /home/simha/app
+      ############################## ********** APP SPECIFIC  ******** #########################
+      # ensure external_config folder exists on host else it will create folder with root:root on the host
+      # but on the docker it will be created using simha:users
+      - type: bind
+        source: ./python_django/Django_external_config
+        target: /home/simha/app/petsproject/external_config
+    command:
+      - sh
+      - -c
+      - |
+        pipenv run python manage.py runserver_plus 0.0.0.0:8000
+    depends_on:
+      - postgresql
+      - celery_worker
+    stdin_open: true # Add this line into your service
+    tty: true # Add this line into your service
+    networks:
+      - postgresql_network
+      - nginx_network
+
+  jupyter:
+    image: "python3.9-nodejs16-buster:nikolaik-python3.9-nodejs16"
+    environment:
+      - SQLPRINT=1
+      - JUPYTER_PASS=1
+      - DEBUG=1
+      - PYTHONBREAKPOINT=ipdb.set_trace
+    volumes:
+      - type: bind
+        source: ../DO_NOT_DELETE_CODING_FOLDER/backend_django
+        target: /home/simha/app
+      - type: bind
+        source: ./python_django/jupyter/.jupyter
+        target: /home/simha/.jupyter
+        # ensure jupyter_related folder exists on host else it will create folder with root:root on the host
+        # but on the docker it will be created using simha:users
+      - type: bind
+        source: ../DO_NOT_DELETE_JUPYTER_NOTEBOOKS
+        target: /home/simha/app/jupyter_related
+      ############################## ********** APP SPECIFIC  ******** #########################
+      # ensure external_config folder exists on host else it will create folder with root:root on the host
+      # but on the docker it will be created using simha:users
+      - type: bind
+        source: ./python_django/Django_external_config
+        target: /home/simha/app/petsproject/external_config
+    depends_on:
+      - postgresql
+      - celery_worker
+    command:
+      - sh
+      - -c
+      - |
+        pipenv run python manage.py shell_plus --notebook
+    networks:
+      - postgresql_network
+      - nginx_network
+
+  node:
+    image: "python3.9-nodejs16-buster:nikolaik-python3.9-nodejs16"
+    volumes:
+      - type: bind
+        source: ../DO_NOT_DELETE_CODING_FOLDER/frontend_reactjs_dash
+        target: /home/simha/app
+    depends_on: # wait for celery, postgresql, redis to be "ready" before starting this service
+      - webapp
+    networks:
+      - nginx_network
+    ports:
+      - "3025:3000"
+    stdin_open: true #https://stackoverflow.com/a/60902143/2897115
+    command:
+      - sh
+      - -c
+      - |
+        npm start
+
+  # also set up ngninx and reactjs axios accordingly
+  # https://stackoverflow.com/a/63139550/2897115
+  ngrok:
+    image: wernight/ngrok:latest
+    ports:
+      - 4030:4040
+    environment:
+      NGROK_PROTOCOL: http
+      NGROK_PORT: nginx:80
+      NGROK_AUTH: "1rsPdDdjitZKvEuPGGN3QzX9pmx_7vBUN76poPdd7voB9sUXQ" # get the token https://dashboard.ngrok.com/get-started/your-authtoken
+      NGROK_REGION: "ap"
+    depends_on:
+      - nginx
+    networks:
+      - nginx_network
+
+networks:
+  postgresql_network:
+    driver: bridge
+  redis_network:
+    driver: bridge
+  nginx_network:
+    driver: bridge
+
+```
+	
+# nginx default.conf
+
+```
+upstream webapp {
+    server webapp:8000;
+}
+
+upstream jupyter {
+    server jupyter:8888;
+}
+
+upstream db {
+    server phppgadmin:8080;
+}
+
+upstream node {
+    server node:3000;
+}
+
+
+# https://stackoverflow.com/a/54679176/2897115
+# multiple ports on ngrok
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://node;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+    }
+
+    # https://ruddra.com/deploy-django-subpath-openshift/
+    # https://stackoverflow.com/a/47945170/2897115
+    # Here is the important part
+    location /django {
+        proxy_pass http://webapp;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Script-Name /django;
+        proxy_cookie_path / /django;
+    }
+
+
+}
+
+
+# For normal django access using api. subdomain
+server {
+    listen 80;
+
+    server_name api.*;
+
+    location / {
+        proxy_pass http://webapp;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        # https://serverfault.com/a/993559
+        #proxy_read_timeout 1800;
+        #proxy_connect_timeout 1800;
+        #proxy_send_timeout 1800;
+        #send_timeout 1800;
+    }
+}
+
+
+#    location /static {
+#        autoindex on;
+#        alias /staticfiles/;
+#    }
+#
+#    location /media {
+#        autoindex on;
+#        alias /mediafiles/;
+#    }
+
+
+server {
+    listen 80;
+
+    server_name db.*;
+
+    location / {
+        proxy_pass http://db;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        #proxy_read_timeout 99999;
+        #proxy_connect_timeout 99999;
+        #proxy_send_timeout 99999;
+        #send_timeout 99999;
+    }
+
+}
+
+
+
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+server {
+    listen 80;
+
+    server_name jyp.*;
+
+    location / {
+        # or whichever port you've set for your Jupyter
+        proxy_pass http://jupyter;
+        # $http_host is important for accessing Jupyter locally
+        proxy_set_header Host $http_host;
+        # http://nginx.org/en/docs/http/websocket.html
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+    }
+}
+```
+
+# django settings.py 
+	
+```
+FORCE_SCRIPT_NAME = '/django'  # without trailing slash
+```
+
+```
+"""
+Django settings for petsproject project.
+
+Generated by 'django-admin startproject' using Django 3.1.
+
+For more information on this file, see
+https://docs.djangoproject.com/en/3.1/topics/settings/
+
+For the full list of settings and their values, see
+https://docs.djangoproject.com/en/3.1/ref/settings/
+"""
+
+from pathlib import Path
+from datetime import timedelta
+import os
+
+# install snoop for this
+# https://github.com/alexmojaki/snoop
+import snoop
+from cheap_repr import find_repr_function
+import six
+
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = "kjyj$22$3*le0&v)0q-=yukolocqe+f19^=$125q^*6aj=u^+-"
+
+# SECURITY WARNING: don't run with debug turned on in production!
+
+# we will check the environ variable if defined
+try:
+    if os.environ["DEBUG"] == "1":
+        DEBUG = True
+    else:
+        DEBUG = False
+except Exception as e:
+    print(str(e))
+    DEBUG = True
+
+ALLOWED_HOSTS = ["*"]
+
+# Application definition
+
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "all_models",
+    # third party
+    "rest_framework",
+    "rest_framework.authtoken",
+    "dj_rest_auth",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "dj_rest_auth.registration",
+    "allauth.socialaccount",
+    "corsheaders",
+]
+
+# required for 'django.contrib.sites' which is required by rest-auth or all-auth
+SITE_ID = 2
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ("dj_rest_auth.jwt_auth.JWTCookieAuthentication",)
+}
+
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = "jwt-access-token"  # you can set these
+JWT_AUTH_REFRESH_COOKIE = "jwt-refresh-token"  # to anything
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=60),
+}
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = (
+    "http://localhost:3025/email_verified"
+)
+OLD_PASSWORD_FIELD_ENABLED = True
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+FORCE_SCRIPT_NAME = '/django'  # without trailing slash
+
+MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+ROOT_URLCONF = "petsproject.urls"
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [str(BASE_DIR / "templates")],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = "petsproject.wsgi.application"
+
+
+# Password validation
+# https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
+
+# AUTH_PASSWORD_VALIDATORS = [
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+#     },
+# ]
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 3,
+        },
+    }
+]
+
+REST_AUTH_SERIALIZERS = {
+    "PASSWORD_RESET_SERIALIZER": "all_models.views.MyPasswordResetSerializer"
+}
+
+
+# Internationalization
+# https://docs.djangoproject.com/en/3.1/topics/i18n/
+
+LANGUAGE_CODE = "en-us"
+
+TIME_ZONE = "UTC"
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+# STATIC_ROOT -- where collect static saves files
+STATIC_ROOT = str(BASE_DIR / ".." / "staticfiles")
+
+STATIC_URL = "/static/"
+
+# STATICFILES_DIRS -- This setting defines the additional locations the collect static app will traverse
+STATICFILES_DIRS = [str(BASE_DIR / "static")]
+
+
+MEDIA_URL = "/media/"
+# note this is the path as per the docker not as per this system
+MEDIA_ROOT = str(BASE_DIR / "media")
+
+AUTH_USER_MODEL = "all_models.User"
+
+
+#####################################################
+# CUSTOMIZE THESE SETTINGS <BEGINS>
+#####################################################
+
+# change the EMAIL BACKEND ONE WANTS TO USE
+# Email settings  (currently we are using file based email backed)
+EMAIL_FILE_PATH = str(BASE_DIR / "sent_emails")
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+
+
+# Celery configs
+# change the REDIS_HOST
+REDIS_HOST = "redis"
+REDIS_PORT = "6379"
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
+
+
+# Database
+# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+
+# change the NAME, USER, PASSWORD AND HOST the way one needs
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "competible",
+        "USER": "django",
+        "PASSWORD": "django",
+        "HOST": "127.0.0.1",
+        "PORT": "5432",
+    }
+}
+
+#####################################################
+# CUSTOMIZE THESE SETTINGS <ENDS>
+#####################################################
+
+
+#####################################################
+# MISC: DONT TOUCH THE BELOW <START>
+#####################################################
+
+
+def path(event):
+    return event.code.co_filename[-20:]
+
+
+find_repr_function(object).maxparts = 100000000
+find_repr_function(dict).maxparts = 100000000
+find_repr_function(list).maxparts = 100000000
+find_repr_function(six.text_type).maxparts = 500000000
+find_repr_function(six.binary_type).maxparts = 100000000
+
+
+snoop.install(enabled=DEBUG, columns=[path, "function"])
+
+if DEBUG:
+
+    PROJECT_HOME = os.path.dirname(os.path.realpath(__file__))
+    print(f"PROJECT_HOME :: {PROJECT_HOME}")
+
+    if os.path.exists(
+        os.path.join(PROJECT_HOME, "external_config", "api_local_settings_fixed.py")
+    ):
+        from .external_config.api_local_settings_fixed import *  # noqa
+
+    if os.path.exists(
+        os.path.join(PROJECT_HOME, "external_config", "api_local_settings_var.py")
+    ):
+        from .external_config.api_local_settings_var import *  # noqa
+
+#####################################################
+# MISC: DONT TOUCH THE BELOW <END>
+#####################################################
+
+
+overrides = None
+try:
+    import petsproject.sys_specific_settings as sys_specific_settings
+
+    overrides = sys_specific_settings.__dict__
+except ModuleNotFoundError:
+    print("using default settings")
+
+if overrides is not None:
+    for name, val in overrides.items():
+        if not name.startswith("__") and name in globals() and globals()[name] != val:
+            globals()[name] = val
+            print(f"overwriting default value for {name} >> {val}")
+
+```
+
+# reactjs 
+	
+setup axios baseurl and also subtitute the medial url with base url
+
+```
+import axios from "axios";
+
+//const baseURL = `http://${window.location.hostname}:8025`;
+
+const baseURL = `http://${window.location.hostname}:${window.location.port}/django`;
+
+const axiosInstance = axios.create({
+  baseURL: baseURL,
+  timeout: 5000,
+  headers: {
+    Authorization: localStorage.getItem("access_token")
+      ? "Bearer " + localStorage.getItem("access_token")
+      : null,
+    "Content-Type": "application/json",
+    accept: "application/json",
+  },
+});
+
+// https://www.youtube.com/watch?v=ANvVndhOxIc
+// https://stackoverflow.com/questions/64576410/react-axios-interceptor-for-refresh-token
+// NOTE: dj-rest-auth/token/refresh return only access and not both again.
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const originalRequest = error.config;
+
+    // Reject promise if usual error
+    if (!error.response) {
+      return Promise.reject(error);
+    }
+
+    // Prevent infinite loops
+    if (
+      error.response.status === 401 &&
+      originalRequest.url === "dj-rest-auth/token/refresh/"
+    ) {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      window.location.href = "/login/";
+      return Promise.reject(error);
+    }
+
+    if (error.response.status === 401) {
+      const refreshToken = localStorage.getItem("refresh_token");
+      if (refreshToken) {
+        return axiosInstance
+          .post("dj-rest-auth/token/refresh/", { refresh: refreshToken })
+          .then((response) => {
+            localStorage.setItem("access_token", response.data.access);
+            axiosInstance.defaults.headers["Authorization"] =
+              "Bearer " + response.data.access;
+            originalRequest.headers["Authorization"] =
+              "Bearer " + response.data.access;
+            return axiosInstance(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      } else {
+        console.log("Refresh token not available.");
+        window.location.href = "/login/";
+      }
+    } else {
+      return Promise.reject(error);
+    }
+  }
+);
+
+export { axiosInstance, baseURL };
+
+```
+	
+## replacing the url
+```
+<img
+  src={`${baseURL}${rowData.photo.replace(/^.*\/\/[^/]+/, "")}`}
+  style={{ width: 50 }}
+/>
+```
