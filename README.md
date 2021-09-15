@@ -3341,7 +3341,7 @@ sudo vi /etc/docker/daemon.json
 after this stop all the containers and restart the docker
 
 ```
-docker stop $(docker ps -a -q)
+docker stop $(docker ps -aq); docker rm $(docker ps -a -q); docker container prune; docker image prune; docker network prune
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
@@ -3363,7 +3363,13 @@ services:
 
 # SERVER BOTTLE NECK: DONT DELETE THE FOLDER DO_NOT_DELETE_postgres_data and dont include in the github repo
 
-DO_NOT_DELETE_postgres_data  stored the postgresql database.
+Reason:
+the below command will remove the volumes also. SO if we want some data to persist then we will be loosing it when the below command runs
+```
+docker stop $(docker ps -aq); docker rm $(docker ps -a -q); docker container prune; docker image prune; docker network prune
+```
+
+DO_NOT_DELETE_postgres_data -- stored the postgresql database.
 	
 
 # Basic Docker folder structure
