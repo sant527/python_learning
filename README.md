@@ -3222,6 +3222,11 @@ sudo visudo
 
 simha ALL=(ALL) NOPASSWD: ALL
 ```
+	
+NOw access as
+```
+ssh simha@xx.xx.xxx.xx
+```
 
 
 # now install docker
