@@ -3394,7 +3394,7 @@ project_folder
 	
 ## USEFUL TIP zsh
 
-#install zsh
+# install zsh
     sudo apt install zsh
 
 # change the default shell
