@@ -3390,3 +3390,61 @@ project_folder
 ||-- DO_NOT_DELETE_POSTGRES_DATA (this is persistent data)
 ||-- DO_NOT_DELETE_JUPYTER_NOTEBOOKS (this is persistent data)
 ```
+
+	
+## USEFUL TIP zsh
+
+#install zsh
+    sudo apt install zsh
+
+# change the default shell
+    chsh -s /usr/bin/zsh
+
+the above will ask for password so better do this
+
+    sudo chsh -s $(which zsh) $(whoami)
+
+run zsh command to configure the .zshrc and select empty file and place this
+
+    ~/.zshrc
+    autoload -Uz compinit promptinit
+    compinit
+    promptinit
+
+    # This will set the default prompt to the walters theme
+    prompt walters
+
+
+# install oh-my-zsh
+
+    sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+
+and replace theme as `aussiegeek`
+
+# USEFUL TIP install hstr later after docker
+
+```
+sudo add-apt-repository ppa:ultradvorka/ppa
+sudo apt-get update
+sudo apt-get install hstr
+
+after this
+
+# Configure HSTR just by running:
+hstr --show-configuration >> ~/.zshrc
+
+then logout and login back
+
+```
+
+bash auto completion history
+```
+cat >> ~/.inputrc <<'EOF'                                                                                                   
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+EOF
+```
+
+```
+bind -f  ~/.inputrc
+```
