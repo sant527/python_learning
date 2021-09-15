@@ -3454,4 +3454,22 @@ bind -f  ~/.inputrc
 docker stop $(docker ps -aq); docker rm $(docker ps -a -q); docker container prune; docker image prune; docker network prune
 docker-compose -p somename -f docker-compose-localhost.yml up --build --force-recreate
 docker-compose -p esomenamelemzy -f docker-compose-localhost-staging.yml logs --no-color --tail=2000 webapp
+
+
+	
+hostfolder="$(pwd)"
+dockerfolder="/home/simha/app"
+docker run --rm -it \
+  -v ${hostfolder}:${dockerfolder} \
+python3.9-nodejs16-buster:nikolaik-python3.9-nodejs16 /bin/bash
+
+docker build -t python-node-buster:nikolaik-python3.7-nodejs15 --file Dockerfile_node_python_buster_aws_ubuntu .
+	
+hostfolder="$(pwd)"
+dockerfolder="/home/simha/app"
+docker run --rm -it \
+  -v ${hostfolder}:${dockerfolder} \
+python-node-buster:nikolaik-python3.7-nodejs15 /bin/bash
+
+
 ```
