@@ -3170,6 +3170,22 @@ so do this
   style={{ width: 50 }}
 />
 ```
+# Digital Ocean Create a Droplet and access it:
+
+- Create a droplet
+- Select the 5 dollar plar
+![](https://i.imgur.com/OhtHpDC.png)
+- Choose data center region
+![](https://i.imgur.com/jFFDSRL.png)
+- choose ssh keys as access
+![](https://i.imgur.com/UdN029L.png)
+	
+Now to access do
+```
+ssh root@xx.xxx.xxx.xx
+```
+
+after that create a user we want to
 
 	
 # USEFUL TIP DIGITAL OCEAN
