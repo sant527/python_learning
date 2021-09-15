@@ -3307,3 +3307,80 @@ uname -r
 --output
 5.4.0-1029-aws
 ```
+
+# SERVER BOTTLE NECK1: IMPORTANT: DOCKER SETUP LOG ROTATION ELSE THE LOGS FILES WILL GROW AND LEFT WITH NO SPACE
+
+>By default, Docker captures the standard output (and standard error) of all your containers, and writes them in files using the JSON format.
+
+By default, the stdout and stderr of the container are written in a JSON file located in 
+
+```
+/var/lib/docker/containers/[container-id]/[container-id]-json.log`
+```
+If you leave it unattended, it can take up a large amount of disk space, as shown below.
+
+## Solution system wide
+ 
+Add this into your `/etc/docker/daemon.json` to cap your container logs to 1gb (100x 10mb files):
+
+`/etc/docker/daemon.json` needs to be created. By default it does not exist
+
+sudo vi /etc/docker/daemon.json
+
+```
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "100"
+  }
+}
+
+```
+
+after this stop all the containers and restart the docker
+
+```
+docker stop $(docker ps -a -q)
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+## solution dockercompose
+
+```
+version: '3'
+services:
+    app:
+        ...
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "100"
+```
+
+
+# SERVER BOTTLE NECK: DONT DELETE THE FOLDER DO_NOT_DELETE_postgres_data and dont include in the github repo
+
+DO_NOT_DELETE_postgres_data  stored the postgresql database.
+	
+
+# Basic Docker folder structure
+```
+project_folder
+||-- CODE
+|-----django_backend (create seperate git repo for this)
+|-----reacts-frontend (create seperate git repo for this)
+
+||-- docker_based (create seperate git repo for this)
+|-----Dockerbuild_node16_python3.9
+|-----nginx
+|-----docker-compose-localhost-localdb.yml
+|-----python_related
+|-----------Django_external_config
+|-----------jupyter
+	
+||-- DO_NOT_DELETE_POSTGRES_DATA (this is persistent data)
+||-- DO_NOT_DELETE_JUPYTER_NOTEBOOKS (this is persistent data)
+```
