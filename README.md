@@ -3398,7 +3398,7 @@ project_folder
     sudo apt install zsh
 
 # change the default shell
-    chsh -s /usr/bin/zsh
+    sudo chsh -s /usr/bin/zsh
 
 the above will ask for password so better do this
 
