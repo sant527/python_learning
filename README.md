@@ -3170,3 +3170,119 @@ so do this
   style={{ width: 50 }}
 />
 ```
+
+	
+# USEFUL TIP DIGITAL OCEAN
+
+## ADD USER WITH SUDO
+
+https://www.digitalocean.com/community/tutorials/how-to-create-a-new-sudo-enabled-user-on-ubuntu-18-04-quickstart
+
+```
+adduser simha
+
+Enter new UNIX password:
+
+# generate random password
+
+date +%s | sha256sum | base64 | head -c 32 ; echo
+
+# adding user to sudo group
+
+usermod -aG sudo simha
+
+# testing
+
+su - simha
+
+sudo ls -la /root
+
+
+# sudo dont ask password
+
+sudo visudo
+
+# add the below line
+
+simha ALL=(ALL) NOPASSWD: ALL
+```
+
+
+# now install docker
+
+check docker is installed or not
+```
+docker info
+```
+
+
+First, update your existing list of packages:
+```
+sudo apt update
+```
+
+Install from standard ubuntu repository
+```
+sudo apt install docker.io
+```
+
+Enable docker
+
+```
+sudo systemctl enable --now docker
+```
+
+Install docker-compose
+
+```
+sudo apt  install docker-compose
+```
+
+Get the user name:
+```
+whoami
+```
+
+If you want to be able to run the docker CLI command as a non-root user, add your user to the docker user group, re-login, and restart docker.service.
+
+```
+sudo usermod -aG docker ubuntu
+
+note: immeditely after this the user may not get access
+
+check
+
+# groups 
+
+see if docker is listed, if not logout and login back
+
+```
+-aG means add to a group
+
+
+after logout and login check the groups
+
+```
+groups
+
+-- output
+ubuntu adm dialout cdrom floppy sudo audio dip video plugdev netdev lxd docker
+```
+
+
+check docker version
+
+```
+docker --version
+
+-- output
+Docker version 19.03.8, build afacb8b7f0
+```
+
+kernel version:
+```
+uname -r
+
+--output
+5.4.0-1029-aws
+```
