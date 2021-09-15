@@ -3448,3 +3448,10 @@ EOF
 ```
 bind -f  ~/.inputrc
 ```
+	
+# USEFUL TIP docker compose related commands:
+```
+docker stop $(docker ps -aq); docker rm $(docker ps -a -q); docker container prune; docker image prune; docker network prune
+docker-compose -p somename -f docker-compose-localhost.yml up --build --force-recreate
+docker-compose -p esomenamelemzy -f docker-compose-localhost-staging.yml logs --no-color --tail=2000 webapp
+```
