@@ -3473,3 +3473,20 @@ python-node-buster:nikolaik-python3.7-nodejs15 /bin/bash
 
 
 ```
+
+# How to update the code on remote server and restart
+	
+```
+$ ssh_sant=1;  
+cd /path/docker_based;
+git add -A; git commit -m "changes"; git push origin
+ssh simha@xx.xx.xx.xx<<'ENDSSH'
+set -x -o verbose;
+cd project/docker_based/
+git stash --include-untracked
+git pull origin --rebase
+docker-compose -p test -f docker-compose-localhost_onserver.yml up --build --force-recreate --remove-orphans -d
+set +x
+ENDSSH
+
+```
