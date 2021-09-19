@@ -3652,6 +3652,9 @@ In this folder you will find a kernel.json file which should look the following 
  "language": "python"
 }
 ```
+```
+ls ~/.local/share/jupyter/kernels/venv/kernel.json
+```
 	
 - Select venv
 	
