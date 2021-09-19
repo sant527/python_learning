@@ -3662,3 +3662,27 @@ ls ~/.local/share/jupyter/kernels/venv/kernel.json
 jupyter notebook
 ```
 	
+# jupyter notebook allow access 
+
+To begin with, if not available, create a config file first
+
+    jupyter notebook --generate-config
+    Writing default config to: /home/simha/.jupyter/jupyter_notebook_config.py
+
+Then head over to the file and edit it 
+
+    cd ~/.jupyter
+
+Uncomment the three lines or delete all and add the three lines
+    
+    c.NotebookApp.allow_origin = '*' #allow all origins
+    c.NotebookApp.ip = '0.0.0.0' # listen on all IPs
+    c.NotebookApp.allow_remote_access = True
+
+Try to connect with remote IP.
+*(If you are using AWS EC2, you'll need to whitelist your ip and enable inbound connections for your client pc or all IP address over the port 8888)*
+    
+If you still can't connect, you can try
+
+    jupyter notebook --ip 0.0.0.0 --port 8888
+
