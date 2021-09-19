@@ -3611,3 +3611,51 @@ docker-compose -p production -f docker-compose-somedomain-com.yml exec nginx -s 
 
 ```
 
+	
+# jupyter add virtual env
+	
+> Jupyter Notebook makes sure that the IPython kernel is available, but you have to manually add a kernel with a different version of Python or a virtual environment. 
+
+	
+- Next you can add your virtual environment to Jupyter by typing:
+
+```
+python -m ipykernel install --user --name=myenv
+	
+or
+	
+ipython kernel install --name "local-venv" --user
+
+or
+
+ipython kernel install --user --name=.venv
+	
+```
+
+- This should print the following:
+```
+Installed kernelspec myenv in /home/user/.local/share/jupyter/kernels/myenv
+```
+
+In this folder you will find a kernel.json file which should look the following way if you did everything correctly:
+
+```
+{
+ "argv": [
+  "/home/user/anaconda3/envs/myenv/bin/python",
+  "-m",
+  "ipykernel_launcher",
+  "-f",
+  "{connection_file}"
+ ],
+ "display_name": "myenv",
+ "language": "python"
+}
+```
+	
+- Select venv
+	
+```
+jupyter notebook
+```
+	
