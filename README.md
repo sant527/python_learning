@@ -3439,6 +3439,13 @@ then logout and login back
 ```
 
 bash auto completion history
+
+method1 add this to .zshrc
+```
+bindkey '^S' history-incremental-pattern-search-backward
+```
+	
+	
 ```
 cat >> ~/.inputrc <<'EOF'                                                                                                   
 "\e[A": history-search-backward
