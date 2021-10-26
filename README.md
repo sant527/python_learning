@@ -3694,3 +3694,24 @@ If you still can't connect, you can try
 
     jupyter notebook --ip 0.0.0.0 --port 8888
 
+
+	
+# git clone with different rsa key
+	
+First generate a key
+	
+```
+ssh-keyge
+```
+give a different name `~/.ssh/id_rsa.pub`
+
+## Clone the repos	
+
+```
+git -c core.sshCommand="ssh -i ~/.ssh/id_rsa_vishnu" clone git@github.com:xxxxxx/Notes_job.git .
+```
+	
+## after cloning add the key
+```
+git config --add --local core.sshCommand 'ssh -i ~/.ssh/id_rsa_vishnu'
+```
