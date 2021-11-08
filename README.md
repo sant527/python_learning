@@ -3761,3 +3761,6 @@ def as_view(cls, **initkwargs):
 
 https://djangodeconstructed.com/2020/01/03/mental-models-for-class-based-views/
 ![](https://i.imgur.com/Tef0SQc.png)
+	    
+### checking
+![](https://i.imgur.com/JMS0RPc.png)
