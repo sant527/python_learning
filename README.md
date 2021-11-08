@@ -3715,3 +3715,20 @@ git -c core.sshCommand="ssh -i ~/.ssh/id_rsa_vishnu" clone git@github.com:xxxxxx
 ```
 git config --add --local core.sshCommand 'ssh -i ~/.ssh/id_rsa_vishnu'
 ```
+	
+# Django Class Based Views
+	
+## What `as_view()` does in the URLConf
+
+```
+response = MyView.as_view()(request)  # valid way
+```	
+By calling the `as_view()` function on my view class MyView will give me a view which i will call with request parameter to initiate the request-response cycle.
+	
+    my_callable_view = BlogIndex.as_view() # returns a callable view
+    <function blog.views.BlogIndex>
+
+Now, call this function and pass the `request`.
+
+     response = my_callable_view(request) # generate proper response
+	    
