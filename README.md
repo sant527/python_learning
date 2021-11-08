@@ -3720,6 +3720,8 @@ git config --add --local core.sshCommand 'ssh -i ~/.ssh/id_rsa_vishnu'
 	
 ## What `as_view()` does in the URLConf
 
+`https://stackoverflow.com/a/31491074/2897115`
+
 ```
 response = MyView.as_view()(request)  # valid way
 ```	
@@ -3731,4 +3733,9 @@ By calling the `as_view()` function on my view class MyView will give me a view 
 Now, call this function and pass the `request`.
 
      response = my_callable_view(request) # generate proper response
-	    
+
+## Another explanation
+https://stackoverflow.com/a/15056648/2897115
+
+![](https://i.imgur.com/AA1sYbX.png)
+![](https://i.imgur.com/uhrxsGG.png)
