@@ -3739,3 +3739,17 @@ https://stackoverflow.com/a/15056648/2897115
 
 ![](https://i.imgur.com/AA1sYbX.png)
 ![](https://i.imgur.com/uhrxsGG.png)
+
+	    
+## what are differnce between `initkwargs` and `kwargs`
+
+### Question
+https://stackoverflow.com/q/28770701/2897115
+
+![](https://i.imgur.com/d9zza1k.png)
+
+### Answer  
+https://stackoverflow.com/a/28770985/2897115
+
+![](https://i.imgur.com/raokKqP.png)
+
