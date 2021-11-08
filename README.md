@@ -3767,3 +3767,104 @@ https://djangodeconstructed.com/2020/01/03/mental-models-for-class-based-views/
 	    
 ### entire process and closures
 ![](https://i.imgur.com/PM7qjiv.png)
+
+	    
+# Using SSH keys with GitLab CI/CD ALL TIERS
+https://docs.gitlab.com/ee/ci/ssh_keys/
+
+## Generate private and public keys
+
+```
+$ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/simha/.ssh/id_rsa): /home/simha/.ssh/id_rsa_QA
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/simha/.ssh/id_rsa_QA
+Your public key has been saved in /home/simha/.ssh/id_rsa_QA.pub
+The key fingerprint is:
+SHA256:hAkR6p+++R8zZRXXsJtn9XS1SMWAvg+VL70f1SFwj8s simha@gauranga
+The key's randomart image is:
++---[RSA 3072]----+
+|    +o     .o+*+.|
+|   . . o   .+o+o+|
+|  .   o . . .+o++|
+| .     .   o.oo+*|
+|  .     S o oE= *|
+|   . .   o o . =.|
+|    o   +   o ...|
+|   . .   +   . ..|
+|    +o...       o|
++----[SHA256]-----+
+```
+
+### Copy the public key to servers authorized keys
+
+```
+$ cat /home/simha/.ssh/id_rsa_QA.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAOQtlWF/GIo21VjtC4x4c480oz4GDpWzYOGAD2HNeUft4dydo5V9coPQpnzz5/kOtcQEzFo+kpyQ4TK0Wm5MiaC3EvRmteJlZI4fXW9x/EkFEcM9v0VUGZisidpoLQIJmXPai2VOSE8Jf7ZZ7Xc71xTaYNCCuZc= xxxx@yyyyy
+```
+Login to the remote server and put it there
+
+```
+ssh username@xx.xx.xxx
+$ vi ~/.ssh/authorized_keys
+```
+
+### ADD CI/CD variable private key
+
+```
+$ cat /home/simha/.ssh/id_rsa_QA
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABlwAAAAdzc2gtcn
+NhAAAAAwEAAQAAAYEA5lETR8hIYbpsYdlXNwLlLEUSomwvLQZ37+5IMdsUe7Aomd6KmWSj
+0Pb/Hsu7EgLIG4xF9X1S+fNALCbeQCNrjO0mmrZ9RfafAX5QxEoe/Bp/cNtztP27PQn69n
+R4uYNQ3lro6wibr3WnO+gXeATAfVF9I1JZDxYuLh2wFyExE3Z8Uaz6iTwlBPFqIKBDunD6
+sIm691pzvoF3gEwH1RfSNSWQ8WLi4dsBchMRN2fFGs+ok8JQTxaiCgQ7pw+qyapisEpAFJ
+ZKVHKtvwPiZEEpf9CbU+nVOcE6L38hyYwaN+c9HwQYTXBdxHmPyMKZzSzJmn6ZI4EQWPMr
+ftqNG/ZGwLaRILHNyGlr41ar3QHSrqJ9XljHUHlWKjXA1UdPXt5LNplSyosD8BYJIYmX0v
+/VPO3i/UMLAM5C2VYX8YijbVWO0LjHhzjzSjPgYOlbNg4YAPYc15R+3h3J2jlX1yg9CmfP
+Pn+Q61xATMWj6SnJDhMrRabkyJoLcS9Ga14mVkjh9db3H8SQURwz2/RVQZmKyJ2mgtAgmZ
+c9qLZU5ITwl/tlntdzvXFNpg0IK5lwAAAAMBAAEAAAGAam1Uh3sZV2+Z3a1dC+Kem9JfRg
+bP1fKDQa/OVJtz36QLXu7jBPbobAt24HgsPapjZbdwLHx4919cbAqZ8PFtJXYAvMVPJiFM
+YJhKIipOHxjvguslkKEfAJm4CmLP1onDuLwxnUohBvdLC/e3wJIRkNczCDtpQ/tv44d8c3
+O3BdNepy9Tpk7QnHQiImlsYp8KdvAPkRlX3/BWPbmhKHjffzc9kFYxQjto39XjjQ8eJfDA
+qhgo1P48iHIEF0JOg4UQZSd32NoVBFt3XwDkvMzGZ1MTu0xrsG0puV4EfmunmBvwGF9naV
+MNAkfquikbozieNzI98vLDbj+7USnWfQvbkSmqvXZ1qi2okNa1flCiLhDYa0VcBOX1yI4c
+W0p2k0+4rQaUo1tLjWZ/agntidiUYU+V+7Ruz5tENJ4Rj7Zo8ydNx9GWn6yl6IocinQOxB
+6J9ivooA/QrhPNYO/BztiIHZ3bVBjfFMYxrJhRLxs5LlVVfjtobevUWdMroGVvf0bhAAAA
+wH3UUoQY5vFTNZthMP97963mJ/QgWYmOCEPr18xsQ5gAJLdW0W4FA/Eh8rt
+-----END OPENSSH PRIVATE KEY-----
+```
+
+Go to gitlab project > settings > CI/CD > variables and add the private key `SSH_PRIVATE_KEY` there
+
+## gitlab CI/CD `gitlab-ci.yml`
+
+```
+variables:
+  DEPLOY_USER: username
+  DEPLOY_HOST: xx.xx.xx.xx
+
+deploy:
+  image: docker:19.03.13
+  stage: deploy_qa
+  only:
+    - QA  
+  before_script:
+    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan ssh-keyscan $DEPLOY_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - |
+      ssh $DEPLOY_USER@$DEPLOY_HOST<<'ENDSSH'                                                                    
+      set -x -o verbose;
+      ..... do the tasks
+      ENDSSH
+```
+
+
