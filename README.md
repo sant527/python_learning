@@ -3764,3 +3764,6 @@ https://djangodeconstructed.com/2020/01/03/mental-models-for-class-based-views/
 	    
 ### checking
 ![](https://i.imgur.com/JMS0RPc.png)
+	    
+### entire process and closures
+![](https://i.imgur.com/PM7qjiv.png)
