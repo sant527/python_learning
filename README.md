@@ -3753,3 +3753,11 @@ https://stackoverflow.com/a/28770985/2897115
 
 ![](https://i.imgur.com/raokKqP.png)
 
+## as_view classbased method
+```
+@classonlymethod
+def as_view(cls, **initkwargs):
+```
+
+https://djangodeconstructed.com/2020/01/03/mental-models-for-class-based-views/
+![](https://i.imgur.com/Tef0SQc.png)
