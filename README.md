@@ -3868,3 +3868,22 @@ deploy:
 ```
 
 
+# react hook form Onchange
+
+You just have to move the `onChange` props after `{...register(...)}`
+
+```tsx
+const productImageField = register("productImage", { required: true });
+
+return (
+    <input
+        className="form-control"
+        type="file"
+        {...productImageField}
+        onChange={(e) => {
+          productImageField.onChange(e);
+          handleImageUpload(e);
+     }}
+    />
+)
+```
