@@ -3936,8 +3936,29 @@ The parser ignores non-alphanumeric characters by default, so both of the follow
 moment("12-25-1995", "MM-DD-YYYY");
 moment("12/25/1995", "MM-DD-YYYY");
 ```
-## convert string to moment object
+# moment tips
+	    
+```
+moment().toISOString()
+"2021-11-23T13:02:05.728Z"
+```
 
 ```
+String(moment())
+"Tue Nov 23 2021 18:56:18 GMT+0530"
+String(moment().utc())
+"Tue Nov 23 2021 13:26:32 GMT+0000"
+moment().toString()
+"Tue Nov 23 2021 18:56:53 GMT+0530"
+moment().toISOString()
+"2021-11-23T13:26:57.748Z"
+moment(5, "HH").toString()
+"Tue Nov 23 2021 05:00:00 GMT+0530"
+moment("1-15 AM +05:30","h-mm A Z").toString()
+"Tue Nov 23 2021 01:15:00 GMT+0530"
+moment("1-15 AM +05:30","h-mm A Z").utc().toString()
+"Mon Nov 22 2021 19:45:00 GMT+0000"
+moment("1-15 AM +05:30","h-mm A Z").utc().format("HH:mm")
+"19:45"
 
 ```
