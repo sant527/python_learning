@@ -3985,4 +3985,10 @@ moment('00:00','HH:mm').tz("UTC",true).toString()
 //here moment('00:00','HH:mm') creates time in loca time zone and then its converted to the corresponding time in UTC without using true
 moment('00:00','HH:mm').tz("UTC").toString()
 "Mon Nov 22 2021 18:30:00 GMT+0000"
+
+NOTE SAME THING CAN BE DONE USING
+
+moment('00:00','HH:mm').utc().toString()
+"Mon Nov 22 2021 18:30:00 GMT+0000"
+
 ```
