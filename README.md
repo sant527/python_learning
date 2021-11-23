@@ -3962,3 +3962,27 @@ moment("1-15 AM +05:30","h-mm A Z").utc().format("HH:mm")
 "19:45"
 
 ```
+
+	    
+# Moment
+	    
+# USING TRUE: HOW TO KEEP TIME SAME AND ONLY CHANGE THE TIME ZONE  OR HOW TO CREATE TIME IN A PARTICULAT TIMEZONE
+
+```
+//moment('00:00','HH:mm')  created in local time zone by default
+moment('00:00','HH:mm').toString()
+"Tue Nov 23 2021 00:00:00 GMT+0530"
+
+//.tz("timezone",true) (WITH TRUE)  creates time in the specific time zone
+moment('00:00','HH:mm').tz("UTC",true).toString()
+"Tue Nov 23 2021 00:00:00 GMT+0000"
+```
+
+# NOT USING TRUE  -- to convert time from one time zone to another (here time changes)
+	    
+```
+//.tz("timezone") (WITHOUT TRUE)  converts time to that time zone
+//here moment('00:00','HH:mm') creates time in loca time zone and then its converted to the corresponding time in UTC without using true
+moment('00:00','HH:mm').tz("UTC").toString()
+"Mon Nov 22 2021 18:30:00 GMT+0000"
+```
