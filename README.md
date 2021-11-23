@@ -3887,3 +3887,57 @@ return (
     />
 )
 ```
+
+	    
+	    
+	    
+# moment javascript
+
+
+## convert moment object to string
+```
+momentObject.format('YYYY-MM-DD')
+
+or
+
+moment().format('MM/DD/YYYY');
+```
+
+### another Example
+
+```
+var moment = require('moment');
+
+let yourdate = '2021-01-02T07:57:45.121Z'; // for example
+
+moment(yourdate).format('MM/DD/YYYY');
+
+// output : 01-02-2021
+
+
+moment(yourdate).format('DD-MMM-YYYY');
+
+// output : 01-Jan-2021
+```
+
+if you want to use moment() in the Chrome console you can try to open the official site and then go to the console.
+
+## parse string to moment object
+
+If you know the format of an input string, you can use that to parse a moment.
+
+```
+moment("12-25-1995", "MM-DD-YYYY");
+```
+
+The parser ignores non-alphanumeric characters by default, so both of the following will return the same thing.
+
+```
+moment("12-25-1995", "MM-DD-YYYY");
+moment("12/25/1995", "MM-DD-YYYY");
+```
+## convert string to moment object
+
+```
+
+```
