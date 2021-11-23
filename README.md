@@ -3990,5 +3990,4 @@ NOTE SAME THING CAN BE DONE USING
 
 moment('00:00','HH:mm').utc().toString()
 "Mon Nov 22 2021 18:30:00 GMT+0000"
-
 ```
