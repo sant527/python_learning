@@ -3991,3 +3991,50 @@ NOTE SAME THING CAN BE DONE USING
 moment('00:00','HH:mm').utc().toString()
 "Mon Nov 22 2021 18:30:00 GMT+0000"
 ```
+
+	    
+# Activating virtualenv inside Dockerfile
+	    
+https://pythonspeed.com/articles/activate-virtualenv-dockerfile/
+	    
+## The repetitive method that totally works
+
+You can fix that by actually activating the virtualenv separately for each RUN as well as the CMD:
+
+```
+FROM python:3.9-slim-bullseye
+
+RUN python3 -m venv /opt/venv
+
+# Install dependencies:
+COPY requirements.txt .
+RUN . /opt/venv/bin/activate && pip install -r requirements.txt
+
+# Run the application:
+COPY myapp.py .
+CMD . /opt/venv/bin/activate && exec python myapp.py
+```
+
+(The exec is there to get correct signal handling.)
+
+## without any repetition or need to remember anything.
+
+The most important part is setting PATH: PATH is a list of directories which are searched for commands to run. activate simply adds the virtualenv’s bin/ directory to the start of the list.
+
+We can replace activate by setting the appropriate environment variables: Docker’s ENV command applies both subsequent RUNs as well as to the CMD.
+
+```
+FROM python:3.9-slim-bullseye
+
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Install dependencies:
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Run the application:
+COPY myapp.py .
+CMD ["python", "myapp.py"]
+```
