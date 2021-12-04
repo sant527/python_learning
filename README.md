@@ -4038,3 +4038,109 @@ RUN pip install -r requirements.txt
 COPY myapp.py .
 CMD ["python", "myapp.py"]
 ```
+	    
+	    
+# Install KVM on archinux
+https://transang.me/install-kvm-on-arch-linux/
+
+## Checking support for KVM
+
+### Hardware support
+
+KVM requires that the virtual machine host's processor has virtualization support (named VT-x for Intel processors and AMD-V for AMD processors). You can check whether your processor supports hardware virtualization with the following command:
+```
+$ LC_ALL=C lscpu | grep Virtualization
+```
+	    
+You may need to enable virtualization support in your BIOS
+
+### Kernel support
+
+* One can check if the necessary modules, kvm and either kvm_amd or kvm_intel, are available in the kernel with the following command:
+
+```
+$ zgrep CONFIG_KVM /proc/config.gz
+
+CONFIG_KVM_GUEST=y
+CONFIG_KVM_MMIO=y
+CONFIG_KVM_ASYNC_PF=y
+CONFIG_KVM_VFIO=y
+CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT=y
+CONFIG_KVM_COMPAT=y
+CONFIG_KVM_XFER_TO_GUEST_WORK=y
+CONFIG_KVM=m
+CONFIG_KVM_INTEL=m
+CONFIG_KVM_AMD=m
+CONFIG_KVM_AMD_SEV=y
+CONFIG_KVM_XEN=y
+CONFIG_KVM_MMU_AUDIT=y
+```
+
+The module is available only if it is set to either y or m.
+
+* Then, ensure that the kernel modules are automatically loaded, with the command:
+
+```
+$ lsmod | grep kvm
+kvm_intel             335872  0
+kvm                  1036288  1 kvm_intel
+irqbypass              16384  1 kvm
+```
+
+## How to use KVM
+https://illuad.fr/2021/04/28/install-kvm-qemu-and-libvirt-on-arch-linux.html
+
+### REFER  QEMU
+
+QEMU can use other hypervisors like Xen or KVM to use CPU extensions (HVM) for virtualization.
+
+https://boseji.com/posts/manjaro-kvm-virtmanager/
+
+# QEMU Installation
+
+```
+sudo pacman -S qemu qemu-arch-extra ovmf bridge-utils dnsmasq vde2 \
+ openbsd-netcat ebtables iptables
+
+ovmf helps to do the UEFI Bios and Secure Boot setups.
+bridge-utils for network bridge needed for VMs
+vde2 for QEMU distributed ethernet emulation
+dnsmasq the DNS forwarder and DHCP server
+openbsd-netcat network testing tool (Optional)
+ebtables and iptables to create packet routing and firewalls
+```
+
+	    
+# HOW TO CHECK LINUX SYSTEM IS PHYSICAL OR VIRTUAL
+
+https://ostechnix.com/check-linux-system-physical-virtual-machine/
+
+```
+$ sudo dmidecode -s system-manufacturer
+[sudo] password for simha: 
+LENOVO
+```
+
+and
+
+```
+$ sudo dmidecode | grep Product
+	Product Name: 80E5
+	Product Name: Lenovo G50-80
+```
+
+Commom outputs
+
+```
+[Physical system]
+
+Inspiron N5050
+
+[Virtual system on VirtualBox]
+
+VirtualBox
+
+[Virtual system on KVM/QEMU]
+
+Standard PC (Q35 + ICH9, 2009)
+```
