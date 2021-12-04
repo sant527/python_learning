@@ -4099,16 +4099,148 @@ https://boseji.com/posts/manjaro-kvm-virtmanager/
 # QEMU Installation
 
 ```
-sudo pacman -S qemu qemu-arch-extra ovmf bridge-utils dnsmasq vde2 \
- openbsd-netcat ebtables iptables
+sudo pacman -S qemu qemu-arch-extra ovmf bridge-utils dnsmasq vde2 openbsd-netcat ebtables iptables-nft dmidecode libvirt
 
 ovmf helps to do the UEFI Bios and Secure Boot setups.
 bridge-utils for network bridge needed for VMs
 vde2 for QEMU distributed ethernet emulation
 dnsmasq the DNS forwarder and DHCP server
 openbsd-netcat network testing tool (Optional)
-ebtables and iptables to create packet routing and firewalls
+ebtables and iptables-nft to create packet routing and firewalls
+dmidecode: reports information about your system’s hardware as described in your system BIOS
+libvirt: Libvirt,
 ```
+## Virt-Manager and libvirtd Service Install
+
+Virt-manager is a UI that helps to create and organize the VM’s. And virt-viewer is used to open remote window into the VM instance.
+
+```
+sudo pacman -S virt-manager virt-viewer
+```
+	    
+RUNNIG
+
+```
+ sudo pacman -S qemu qemu-arch-extra ovmf bridge-utils dnsmasq vde2 openbsd-netcat ebtables iptables-nft dmidecode
+
+warning: bridge-utils-1.7.1-1 is up to date -- reinstalling
+warning: vde2-2.3.2-16 is up to date -- reinstalling
+warning: dmidecode-3.3-1 is up to date -- reinstalling
+resolving dependencies...
+looking for conflicting packages...
+:: openbsd-netcat and gnu-netcat are in conflict. Remove gnu-netcat? [y/N] y
+:: iptables-nft and iptables are in conflict. Remove iptables? [y/N] y
+
+Packages (14) gnu-netcat-0.7.1-8 [removal]  iptables-1:1.8.7-1 [removal]  libbpf-0.5.0-1  nftables-1:1.0.0-1  sdl2_image-2.0.5-2  bridge-utils-1.7.1-1
+              dmidecode-3.3-1  dnsmasq-2.86-1  edk2-ovmf-202108-1  iptables-nft-1:1.8.7-1  openbsd-netcat-1.217_2-1  qemu-6.1.0-5  qemu-arch-extra-6.1.0-5
+              vde2-2.3.2-16
+
+Total Download Size:    78.44 MiB
+Total Installed Size:  804.29 MiB
+Net Upgrade Size:      757.68 MiB
+
+:: Proceed with installation? [Y/n] 
+```
+
+### If you want to play with Libvirt, you must be in the libvirt group.
+```
+sudo usermod -aG libvirt $USER
+```
+	    
+## Step 3: Start KVM libvirt service
+
+https://computingforgeeks.com/install-kvm-qemu-virt-manager-arch-manjar/
+
+```
+sudo systemctl enable libvirtd.service
+sudo systemctl start libvirtd.service
+```
+	    
+## enable services
+
+```
+$ sudo systemctl enable --now libvirtd
+sudo systemctl enable --now dnsmasq.service
+Created symlink /etc/systemd/system/multi-user.target.wants/libvirtd.service → /usr/lib/systemd/system/libvirtd.service.
+Created symlink /etc/systemd/system/sockets.target.wants/virtlockd.socket → /usr/lib/systemd/system/virtlockd.socket.
+Created symlink /etc/systemd/system/sockets.target.wants/virtlogd.socket → /usr/lib/systemd/system/virtlogd.socket.
+Created symlink /etc/systemd/system/sockets.target.wants/libvirtd.socket → /usr/lib/systemd/system/libvirtd.socket.
+Created symlink /etc/systemd/system/sockets.target.wants/libvirtd-ro.socket → /usr/lib/systemd/system/libvirtd-ro.socket.
+Created symlink /etc/systemd/system/multi-user.target.wants/dnsmasq.service → /usr/lib/systemd/system/dnsmasq.service.
+```
+
+## make sure that Libvirt daemon runs by checking its status.
+
+```
+$ sudo systemctl status libvirtd
+● libvirtd.service - Virtualization daemon
+     Loaded: loaded (/usr/lib/systemd/system/libvirtd.service; enabled; vendor preset: disabled)
+     Active: active (running) since Sat 2021-12-04 19:41:45 IST; 1min 10s ago
+TriggeredBy: ● libvirtd.socket
+             ● libvirtd-ro.socket
+             ● libvirtd-admin.socket
+       Docs: man:libvirtd(8)
+             https://libvirt.org
+   Main PID: 506320 (libvirtd)
+      Tasks: 19 (limit: 32768)
+     Memory: 13.2M
+        CPU: 485ms
+     CGroup: /system.slice/libvirtd.service
+             └─506320 /usr/bin/libvirtd --timeout 120
+
+Dec 04 19:41:45 gauranga systemd[1]: Started Virtualization daemon.
+```
+
+## Allow Non-root User to use KVM/QEMU Virtualization
+https://www.howtoforge.com/how-to-install-kvm-qemu-on-manjaro-archlinux/
+
+By default, only user "root" can create and manage virtual machines. To allow non-root users to create and manage virtual machines, you should follow the libvirtd configuration below.
+
+Execute the following command to edit the libvirtd configuration.
+
+```
+sudo nano /etc/libvirt/libvirtd.conf
+```
+Uncomment the option "unix_sock_group" and enter the group name as "libvirt".
+```
+# Set the UNIX domain socket group ownership. This can be used to
+# allow a 'trusted' set of users access to management capabilities
+# without becoming root.
+#
+# This setting is not required or honoured if using systemd socket
+# activation.
+#
+# This is restricted to 'root' by default.
+unix_sock_group = "libvirt"
+```
+After that, uncomment the option "unix_sock_rw_perms" and leave the permission as default "0770".
+```
+# Set the UNIX socket permissions for the R/W socket. This is used
+# for full management of VMs
+#
+# This setting is not required or honoured if using systemd socket
+# activation.
+#
+# Default allows only root. If PolicyKit is enabled on the socket,
+# the default will change to allow everyone (eg, 0777)
+#
+# If not using PolicyKit and setting group ownership for access
+# control, then you may want to relax this too.
+unix_sock_rw_perms = "0770"
+```
+Save the configuration by pressing the Ctrl+x button and type y, then enter.
+
+2. Next, add your user to the group "libvirt" using the following command.
+```
+sudo usermod -a -G libvirt username
+```
+3. After that, restart the libvirtd service to apply a new configuration.
+```
+sudo systemctl restart libvirtd
+```
+Now all users within the group "libvirt" will be able to create and configure virtual machines.
+
+
 
 	    
 # HOW TO CHECK LINUX SYSTEM IS PHYSICAL OR VIRTUAL
