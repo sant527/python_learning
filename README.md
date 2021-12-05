@@ -4462,3 +4462,21 @@ As previously mentioned, QEMU can run independently, but due to the emulation be
 ## steps to switch
 
 ![](https://i.imgur.com/AmiaKgM.png)
+
+## Restarting minikube
+After stopping minikube you may run into an issue when trying to restart it.
+```
+Error starting host: Error starting stopped host: Error creating VM: virError(Code=55, Domain=19, Message='Requested operation is not valid: network 'minikube-net' is not active').
+```
+KVM will not autostart the minikube network. To instruct KVM to autostart it, run:
+```
+virsh net-autostart minikube-net
+```
+Start the stopped network:
+```
+virsh net-start minikube-net
+```
+You can see a list of networks with their status by running:
+```
+virsh net-list --all
+```
