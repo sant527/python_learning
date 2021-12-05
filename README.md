@@ -4405,7 +4405,9 @@ If you are using virt-manager GUI program, changing the default storage pool is 
 
 
 
-# Docker Machine Benefits #
+# Docker Machine Benefits
+
+https://burmillaos.org/docs/installation/workstation/docker-machine/
 
 With Docker Machine, you can point the docker client on your host to the docker daemon running inside of the VM. This allows you to run your docker commands as if you had installed docker on your host.
 
