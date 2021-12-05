@@ -4427,3 +4427,11 @@ In your VM, a nginx container will start on your VM. To access the container, yo
 $ docker-machine ip <MACHINE-NAME>
 ```
 Once you obtain the IP address, paste it in a browser and a Welcome Page for nginx will be displayed.
+
+# docker machine
+
+https://blog.scottlowe.org/2017/11/24/using-docker-machine-kvm-libvirt/
+
+Docker Machine is, in my opinion, a useful and underrated tool. 
+
+You might be wondering if there’s any value in using Docker Machine to run a VM on Linux when you can just run Docker directly on the Linux host. I haven’t fully tested the idea yet, but my initial thought is that it would enable users to run various different versions of the Docker Engine (using the --engine-install-url option, as I outlined here). If you have other ideas where this sort of arrangement might have value, I’d love to hear them; hit me up on Twitter.
