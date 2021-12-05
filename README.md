@@ -4308,8 +4308,13 @@ Then we come to libvirt. Libvirt is quite innocent in the sense that is doesn’
 
 So, whenever you are using these all together, remember there is a hypervisor, an accelerating agent and a management library.
 
+# KVM VS QEMU VS LIBVERT
+
+https://octetz.com/docs/2020/2020-05-06-linux-hypervisor-setup/
 
 These are the key tools/services/features that enable vitalization.
+
+## key system tools:
 
 kvm:
 
@@ -4325,3 +4330,76 @@ qemu:
 libvirt:
 
   - Exposes a consistent API atop many virtualization technologies. APIs are consumed by client tools for provisioning and managing VMs.
+
+## user/client tools:
+
+![](https://i.imgur.com/Jn4IL6j.png)
+
+## ancillary system tools:
+
+![](https://i.imgur.com/GfAuvf4.png)
+
+## The overall diagram
+
+![](https://i.imgur.com/1BKhEy0.png)
+
+## How to install
+
+```
+pacman -Sy --needed \
+  qemu \
+  dhclient \
+  openbsd-netcat \
+  virt-viewer \
+  libvirt \
+  dnsmasq \
+  dmidecode \
+  ebtables \
+  virt-install \
+  virt-manager \
+  bridge-utils
+```
+
+## storage location
+
+
+ibvirt keeps its files at /var/lib/libvirt/. There are multiple directories within.
+```
+drwxr-xr-x  2 root   root 4096 Apr  4 05:05 boot
+drwxr-xr-x  2 root   root 4096 May  6 16:16 dnsmasq
+drwxr-xr-x  2 root   root 4096 Apr  4 05:05 filesystems
+drwxr-xr-x  2 root   root 4096 May  6 10:52 images
+drwxr-xr-x  3 root   root 4096 May  6 09:55 lockd
+drwxr-xr-x  2 root   root 4096 Apr  4 05:05 lxc
+drwxr-xr-x  2 root   root 4096 Apr  4 05:05 network
+drwxr-xr-x 11 nobody kvm  4096 May  6 16:16 qemu
+drwxr-xr-x  2 root   root 4096 Apr  4 05:05 swtpm
+The images directory is the default location a VM's disk image will be stored (e.g. qcow2).
+```
+
+# qemu:///system vs qemu:///session
+
+https://blog.wikichoon.com/2016/01/qemusystem-vs-qemusession.html
+
+# How to change default location of libvirt VM images
+
+https://www.xmodulo.com/change-default-location-libvirt-vm-images.html
+
+libvirt and its GUI front-end virt-manager can create and manage VMs using different hypervisors such as KVM and Xen. By default, all the VM images created via libvirt go to /var/lib/libvirt/images directory. 
+
+However, this may not be desirable in some cases. For example, the disk partition where /var/lib/libvirt/images resides may have limited free space. 
+
+In fact, you can easily change the default location of the libvirt image directory, or what they call a "storage pool".
+
+If you are using virt-manager GUI program, changing the default storage pool is very easy.
+
+![](https://i.imgur.com/Uwkb9RF.png)
+
+![](https://i.imgur.com/7qK58ZM.png)
+
+![](https://i.imgur.com/tVQLNBK.png)
+
+![](https://i.imgur.com/OnTHtPM.png)
+
+![](https://i.imgur.com/LzVDvos.png)
+
