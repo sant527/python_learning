@@ -4449,4 +4449,8 @@ QEMU is a userland type 2 (i.e runs upon a host OS) hypervisor for performing ha
 
 KVM is a Linux kernel module. It is a type 1 hypervisor that is a full virtualization solution for Linux on x86 hardware containing virtualization extensions (Intel VT or AMD-V)[1]. **But what is full virtualization, you may ask?** When a CPU is emulated (vCPU) by the hypervisor, the hypervisor has to translate the instructions meant for the vCPU to the physical CPU. **As you can imagine this has a massive performance impact**. To overcome this, modern processors support virtualization extensions, such as Intel VT-x and AMD-V. These technologies provide the ability for a slice of the **physical CPU to be directly mapped to the vCPU**. **Therefore the instructions meant for the vCPU can be directly executed on the physical CPU slice.[2]**
 
+## summary
+
+As previously mentioned, QEMU can run independently, but due to the emulation being performed entirely in software it is extremely slow. To overcome this, QEMU allows you to use KVM as an accelerator so that the physical CPU virtualization extensions can be used. So to conclude: QEMU is a type 2 hypervisor that runs within user space and performs virtual hardware emulation, whereas KVM is a type 1 hypervisor that runs in kernel space, that allows a user space program access to the hardware virtualization features of various processors.[3]
+
 ![](https://www.packetcoders.io/content/images/2020/01/image1.png)
