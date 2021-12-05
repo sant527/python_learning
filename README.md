@@ -4307,3 +4307,21 @@ QEMU is the hypervisor/emulator and KVM is the accelerating agent.
 Then we come to libvirt. Libvirt is quite innocent in the sense that is doesn’t confuse you! It is simply a virtualization management library. And what does it do? It manages both KVM and QEMU. It consists of three utilities namely - an API library, a daemon (libvirtd) and a command line tool -virsh
 
 So, whenever you are using these all together, remember there is a hypervisor, an accelerating agent and a management library.
+
+
+These are the key tools/services/features that enable vitalization.
+
+kvm:
+
+  - Kernel-based Virtual Machine
+  - Kernel module that handles CPU and memory communication
+
+qemu:
+
+  - Quick EMUlator
+  - Emulates many hardware resources such as disk, network, and USB. While it can emulate CPU, you'll be exposed to qemu/kvm, which delegates concerns like that to the KVM (which is HVM).
+  - Memory relationship between qemu/kvm is a little more complicated but can be read about here.
+
+libvirt:
+
+  - Exposes a consistent API atop many virtualization technologies. APIs are consumed by client tools for provisioning and managing VMs.
