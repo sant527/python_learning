@@ -4454,3 +4454,11 @@ KVM is a Linux kernel module. It is a type 1 hypervisor that is a full virtualiz
 As previously mentioned, QEMU can run independently, but due to the emulation being performed entirely in software it is extremely slow. To overcome this, QEMU allows you to use KVM as an accelerator so that the physical CPU virtualization extensions can be used. So to conclude: QEMU is a type 2 hypervisor that runs within user space and performs virtual hardware emulation, whereas KVM is a type 1 hypervisor that runs in kernel space, that allows a user space program access to the hardware virtualization features of various processors.[3]
 
 ![](https://www.packetcoders.io/content/images/2020/01/image1.png)
+
+# Switching from Minikube with VirtualBox to KVM
+
+![](https://i.imgur.com/ufpYzG6.png)
+
+## steps to switch
+
+![](https://i.imgur.com/AmiaKgM.png)
