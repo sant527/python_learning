@@ -4276,3 +4276,34 @@ VirtualBox
 
 Standard PC (Q35 + ICH9, 2009)
 ```
+
+# Differences between QEMU, KVM, and Libvirt
+
+QEMU is a machine (hardware) emulator.
+
+KVM is a kernel module for Linux to enable virtualization; this is the hypervisor.
+
+QEMU can run without KVM but it can be quite a bit slower.
+
+libvirt is a virtualization library which wraps QEMU and KVM to provide APIs for use by other programs, such as Vagrant, which is a tool for creating virtualized development environments.
+
+Summary:
+
+Vagrant uses libvirt.
+libvirt uses QEMU and KVM.
+
+
+# KVM vs QEMU vs Libvirt
+https://www.thegeekyway.com/kvm-vs-qemu-vs-libvirt/
+
+Hypervisor is the agent that helps you create virtual machines. He is the guy who creates and runs the guest machine and provide the host’s resource to the guest
+
+QEMU and KVM both are able to act as hypervisor. Then why are they used together?
+
+QEMU it is a little slower
+
+QEMU is the hypervisor/emulator and KVM is the accelerating agent.
+
+Then we come to libvirt. Libvirt is quite innocent in the sense that is doesn’t confuse you! It is simply a virtualization management library. And what does it do? It manages both KVM and QEMU. It consists of three utilities namely - an API library, a daemon (libvirtd) and a command line tool -virsh
+
+So, whenever you are using these all together, remember there is a hypervisor, an accelerating agent and a management library.
