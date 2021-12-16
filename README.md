@@ -4480,3 +4480,50 @@ You can see a list of networks with their status by running:
 ```
 virsh net-list --all
 ```
+
+# Jupyter and Django
+
+install django extensions
+
+```
+pip install django-extensions
+```
+
+Add into settings.py
+
+```
+INSTALLED_APPS = (
+____...
+__)
+
+if DEBUG:_
+_____INSTALLED_APPS += [ 'django_extensions']
+```
+	    
+Some use of django extensions
+```
+python manage.py shell_plus
+#Run the enhanced django shell:
+```
+
+## Install ipython in dev server:
+A powerful interactive shell and also A kernel for Jupyter. Also Prints sql
+
+installation of shell_plus
+```
+pip install ipython --dev
+```
+```
+python manage.py shell_plus --ipython --print-sql
+```
+
+Install jupyter notebook in dev server:
+
+installation of jupyter
+```
+pip install jupyter
+```
+
+```
+python manage.py shell_plus --notebook
+```
