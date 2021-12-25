@@ -4562,3 +4562,6 @@ https://medium.com/analytics-vidhya/python-generators-coroutines-async-io-with-e
 
 ![](https://i.imgur.com/sUTVb0b.png)
 
+## info
+
+![](https://i.imgur.com/wsYXG66.png)
