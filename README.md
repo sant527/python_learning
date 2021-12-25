@@ -4537,4 +4537,9 @@ https://djangodeconstructed.com/2018/02/15/how-a-request-becomes-a-response-divi
 ![](https://i.imgur.com/B7p3Yu3.png)
 ![](https://i.imgur.com/tT9Tp4g.png)
 
+https://www.toptal.com/python/pythons-wsgi-server-application-interface
+### info
 ![](https://i.imgur.com/AAf6B1Y.png)
+
+### info
+![](https://i.imgur.com/xPCo5Fu.png)
