@@ -4527,3 +4527,14 @@ pip install jupyter
 ```
 python manage.py shell_plus --notebook
 ```
+	    
+	    
+# django wsgi
+	    
+https://djangodeconstructed.com/2018/02/15/how-a-request-becomes-a-response-diving-deeper-into-wsgi/
+	    
+![](https://i.imgur.com/uOfql2y.png)
+![](https://i.imgur.com/B7p3Yu3.png)
+![](https://i.imgur.com/tT9Tp4g.png)
+
+![](https://i.imgur.com/AAf6B1Y.png)
