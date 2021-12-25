@@ -4557,3 +4557,8 @@ https://medium.com/analytics-vidhya/python-generators-coroutines-async-io-with-e
 ## info
 
 ![](https://i.imgur.com/rx9Ke8H.png)
+
+## info
+
+![](https://i.imgur.com/sUTVb0b.png)
+
