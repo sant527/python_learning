@@ -4565,3 +4565,26 @@ https://medium.com/analytics-vidhya/python-generators-coroutines-async-io-with-e
 ## info
 
 ![](https://i.imgur.com/wsYXG66.png)
+	    
+	    
+# yield 
+
+![](https://i.imgur.com/v99gL2v.png)
+
+## info
+
+![](https://i.imgur.com/r2VUH6I.png)
+	    
+## info
+
+![](https://i.imgur.com/BbmcNOb.png)
+
+## info
+
+![](https://i.imgur.com/zNlil34.png)
+
+## info
+
+https://stackabuse.com/python-async-await-tutorial/
+
+![](https://i.imgur.com/Mdk41TO.png)
