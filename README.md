@@ -4545,7 +4545,7 @@ https://www.toptal.com/python/pythons-wsgi-server-application-interface
 ![](https://i.imgur.com/xPCo5Fu.png)
 
 
-# Python Generators/Coroutines/Async IO with examples
+# Python Generators/Coroutines/Async IO with examples - async
 
 https://medium.com/analytics-vidhya/python-generators-coroutines-async-io-with-examples-28771b586578
 
@@ -4588,3 +4588,7 @@ https://medium.com/analytics-vidhya/python-generators-coroutines-async-io-with-e
 https://stackabuse.com/python-async-await-tutorial/
 
 ![](https://i.imgur.com/Mdk41TO.png)
+
+## info sync keyword
+
+![](https://i.imgur.com/NZJhX0g.png)
