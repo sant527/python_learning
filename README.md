@@ -4647,3 +4647,17 @@ https://arunrocks.com/a-guide-to-asgi-in-django-30-and-its-performance/
 # django channels and rest auth
 
 ![](https://i.imgur.com/CylZ2X0.png)
+
+## info
+	    
+https://florimond.dev/en/posts/2019/08/introduction-to-asgi-async-python-web/
+
+![](https://i.imgur.com/Nny8lcn.png)
+
+# from asgiref.sync import async_to_sync
+
+https://blog.proximity.tech/steering-django-towards-an-async-world
+
+![](https://i.imgur.com/Dm3vOkl.png)
+
+
