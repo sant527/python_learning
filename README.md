@@ -4592,3 +4592,32 @@ https://stackabuse.com/python-async-await-tutorial/
 ## info sync keyword
 
 ![](https://i.imgur.com/NZJhX0g.png)
+
+## info yield from
+
+![](https://i.imgur.com/zgQxwig.png)
+
+## info
+
+![](https://i.imgur.com/Wb9nw5E.png)
+
+## Running the event loop
+
+![](https://i.imgur.com/PWQojKC.png)
+
+## info
+![](https://i.imgur.com/JOZynbp.png)
+
+## The asyncio module in Python
+
+https://www.educative.io/edpresso/how-to-implement-async-await-in-python
+
+![](https://i.imgur.com/tIuQHFb.png)
+
+## info
+
+![](https://i.imgur.com/WDkp6ng.png)
+
+## info
+
+![](https://i.imgur.com/8qmmkNi.png)
