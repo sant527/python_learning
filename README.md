@@ -4643,3 +4643,7 @@ https://arunrocks.com/a-guide-to-asgi-in-django-30-and-its-performance/
 ## info
 
 ![](https://i.imgur.com/nQ6Vaqr.png)
+
+# django channels and rest auth
+
+![](https://i.imgur.com/CylZ2X0.png)
