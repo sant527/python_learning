@@ -4639,3 +4639,7 @@ https://arunrocks.com/a-guide-to-asgi-in-django-30-and-its-performance/
 ## info
 
 ![](https://i.imgur.com/EakCAD3.png)
+	    
+## info
+
+![](https://i.imgur.com/nQ6Vaqr.png)
