@@ -4628,5 +4628,7 @@ https://arunrocks.com/a-guide-to-asgi-in-django-30-and-its-performance/
 
 ![](https://i.imgur.com/g5fxbwj.png)
 	    
+## info
 
+![](https://i.imgur.com/mPFMrxx.png)
 
