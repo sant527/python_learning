@@ -4621,3 +4621,12 @@ https://www.educative.io/edpresso/how-to-implement-async-await-in-python
 ## info
 
 ![](https://i.imgur.com/8qmmkNi.png)
+
+## async
+
+https://arunrocks.com/a-guide-to-asgi-in-django-30-and-its-performance/
+
+![](https://i.imgur.com/g5fxbwj.png)
+	    
+
+
