@@ -4671,6 +4671,26 @@ https://www.aeracode.org/2018/02/19/python-async-simplified/
 
 ## The event loop is really what makes everything possible, and without it, async Python would just be a super weird control flow with no actual speed benefits.
 
+# Simplest async/await example possible in Python
+
+This way it's possible to write code that works:
+
+```
+import asyncio
+
+async def main():
+    print('done!')
+
+if __name__ ==  '__main__':
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
+```
 
 
+# async
 
+![](https://i.imgur.com/QYRvPz5.png)
+
+# info
+
+![](https://i.imgur.com/3cry4Tl.png)
