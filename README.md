@@ -4706,4 +4706,14 @@ https://stackoverflow.com/questions/50757497/simplest-async-await-example-possib
 
 ## info
 
+https://www.integralist.co.uk/posts/python-asyncio/
+
 ![](https://i.imgur.com/mblFig4.png)
+
+## info
+
+![](https://i.imgur.com/hXOV1il.png)
+
+## info
+
+![](https://i.imgur.com/xSzYn3S.png)
