@@ -4721,3 +4721,7 @@ https://www.integralist.co.uk/posts/python-asyncio/
 ## info
 
 ![](https://i.imgur.com/mVwFDxL.png)
+
+## info
+
+![](https://i.imgur.com/CpwyigS.png)
