@@ -4659,5 +4659,18 @@ https://florimond.dev/en/posts/2019/08/introduction-to-asgi-async-python-web/
 https://blog.proximity.tech/steering-django-towards-an-async-world
 
 ![](https://i.imgur.com/Dm3vOkl.png)
+	    
+# await
+
+https://www.aeracode.org/2018/02/19/python-async-simplified/
+
+![](https://i.imgur.com/txdFAXr.png)
+	    
+## info
+![](https://i.imgur.com/bt5RtKx.png)
+
+## The event loop is really what makes everything possible, and without it, async Python would just be a super weird control flow with no actual speed benefits.
+
+
 
 
