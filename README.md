@@ -4729,3 +4729,9 @@ https://www.integralist.co.uk/posts/python-asyncio/
 ## info
 
 ![](https://i.imgur.com/5uUFYGH.png)
+	    
+	    
+	    
+# ws protocol does not work with nginx
+
+in docker open port in webapp instead of using nginx proxy if we want websockets to work
