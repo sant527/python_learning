@@ -4054,6 +4054,8 @@ $ LC_ALL=C lscpu | grep Virtualization
 	    
 You may need to enable virtualization support in your BIOS
 
+![](https://i.imgur.com/ncypijp.png)
+	    
 ### Kernel support
 
 * One can check if the necessary modules, kvm and either kvm_amd or kvm_intel, are available in the kernel with the following command:
@@ -4735,3 +4737,18 @@ https://www.integralist.co.uk/posts/python-asyncio/
 # ws protocol does not work with nginx
 
 in docker open port in webapp instead of using nginx proxy if we want websockets to work
+
+	    
+# What's the difference between KVM, QEMU and libvirt?
+
+Qemu is the lowest level that emulates processor and peripherals. KVM is to accelerate it if the CPU has VT enabled. Libvirt provides a daemon and client to manipulate VMs for convenience. See also Difference between KVM and QEMU on Server Fault.
+
+## answer 2
+
+**Qemu** is a processor emulating virtualization software with many virtual devices support (such as HDD,RAM,sound,ethernet,USB,VGA , etc.)
+
+**KVM** is a kernel module which allows passing through CPU cores via **host-passthrough** without virtualizing them. It also allows passing through PCI devices via **vfio-pci** kernel module. 
+
+All these passthrough functionality are possible via **IOMMU** (Input output memory mapping unit), which maps real DMA addresses to virtualized addresses so direct access becomes possible and it brings bare-metal (native) performance. IOMMU is a mechanism which is part software in kernel and part hardware in chipsets, featured as **VT-D** (vmx) **AMD-VI** (svm). **SR-IOV** is a chipset feature which allows splitting one PCI device to many virtual ones without performance drop via parallelized direct IO access.
+
+**Libvirt** is a library, allowing you to use python and other programming languages to configure virtual machines. **Virsh** is a toolkit which works in terminal to monitor and configure virtual machine settings. **Virt-manager** is VMware player like GUI as an alternative to virsh and it uses libvirt. 
