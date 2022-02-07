@@ -4752,3 +4752,8 @@ Qemu is the lowest level that emulates processor and peripherals. KVM is to acce
 All these passthrough functionality are possible via **IOMMU** (Input output memory mapping unit), which maps real DMA addresses to virtualized addresses so direct access becomes possible and it brings bare-metal (native) performance. IOMMU is a mechanism which is part software in kernel and part hardware in chipsets, featured as **VT-D** (vmx) **AMD-VI** (svm). **SR-IOV** is a chipset feature which allows splitting one PCI device to many virtual ones without performance drop via parallelized direct IO access.
 
 **Libvirt** is a library, allowing you to use python and other programming languages to configure virtual machines. **Virsh** is a toolkit which works in terminal to monitor and configure virtual machine settings. **Virt-manager** is VMware player like GUI as an alternative to virsh and it uses libvirt. 
+	    
+	    
+# Kubernetes Basic modules
+
+![](https://i.imgur.com/ZOzVHDY.png)
