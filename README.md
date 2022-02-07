@@ -4757,3 +4757,42 @@ All these passthrough functionality are possible via **IOMMU** (Input output mem
 # Kubernetes Basic modules
 
 ![](https://i.imgur.com/ZOzVHDY.png)
+
+# Kubernets cluster
+
+Kubernetes coordinates a highly available cluster of computers that are connected to work as a single unit.
+
+The abstractions in Kubernetes allow you to deploy containerized applications to a cluster without tying them specifically to individual machines
+
+Kubernetes automates the distribution and scheduling of application containers across a cluster in a more efficient way.
+
+# A Kubernetes cluster consists of two types of resources:
+
+- The Control Plane coordinates the cluster
+- Nodes are the workers that run applications
+
+![](https://i.imgur.com/fCPWWaj.png)
+
+# Control Plane
+
+The Control Plane is responsible for managing the cluster. 
+
+The Control Plane coordinates all activities in your cluster, such as scheduling applications, maintaining applications' desired state, scaling applications, and rolling out new updates.
+
+# node
+
+A node is a VM or a physical computer that serves as a worker machine in a Kubernetes cluster. 
+
+Each node has a Kubelet, which is an agent for managing the node and communicating with the Kubernetes control plane.
+
+The node should also have tools for handling container operations, such as containerd or Docker.
+
+# What is a Kubernetes Cluster?
+
+A Kubernetes (K8s) cluster is a grouping of nodes that run containerized apps in an efficient, automated, distributed, and scalable manner.
+
+https://www.weave.works/blog/kubernetes-cluster
+
+# pod vs node
+
+![](https://i.imgur.com/HrHAW0f.png)
