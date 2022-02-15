@@ -4796,3 +4796,30 @@ https://www.weave.works/blog/kubernetes-cluster
 # pod vs node
 
 ![](https://i.imgur.com/HrHAW0f.png)
+
+	    
+# Automatically prune Docker images
+https://alexgallacher.com/prune-unused-docker-images-automatically/
+
+```
+docker system prune -f  --filter "until=6h"
+```
+
+ The -f flag just prevents the confirmation prompt which typically prompts the user to confirm if they are happing to confirm with the pruning.
+
+--filter - Adding a filter allows us to specify the age of images that we wish to delete. In this case it's any images that are older than 6h
+
+lets create a new file in the Cron file to house our command:
+```
+cd /etc/cron.daily
+sudo nano docker-prune
+```
+	    
+Once the file opens add the prune command we created and inform the OS it's a bash file
+
+```
+#!/bin/bash
+docker system prune -af  --filter "until=6h"
+```
+
+	    
