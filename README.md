@@ -4830,4 +4830,4 @@ sudo chmod +x /etc/cron.daily/docker-prune
 	    
 https://medium.com/@jonsbun/why-need-to-be-careful-when-mounting-single-files-into-a-docker-container-4f929340834
 
-[](https://i.imgur.com/jDNRvst.png)
+![](https://i.imgur.com/jDNRvst.png)
