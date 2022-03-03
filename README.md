@@ -4824,3 +4824,10 @@ docker system prune -af  --filter "until=6h"
 ```
 sudo chmod +x /etc/cron.daily/docker-prune
 ```
+
+	    
+# Docker and mounting-single-files-into-a-docker-container it does not sync:
+	    
+https://medium.com/@jonsbun/why-need-to-be-careful-when-mounting-single-files-into-a-docker-container-4f929340834
+
+[](https://i.imgur.com/jDNRvst.png)
