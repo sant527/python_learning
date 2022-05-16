@@ -4831,3 +4831,8 @@ sudo chmod +x /etc/cron.daily/docker-prune
 https://medium.com/@jonsbun/why-need-to-be-careful-when-mounting-single-files-into-a-docker-container-4f929340834
 
 ![](https://i.imgur.com/jDNRvst.png)
+
+
+# Arch Linux: Cannot find shared library libffi.so.7Archlinux:
+
+https://lakur.tech/2021/10/21/arch-linux-cannot-find-shared-library-libffi-so-7/
