@@ -4836,3 +4836,109 @@ https://medium.com/@jonsbun/why-need-to-be-careful-when-mounting-single-files-in
 # Arch Linux: Cannot find shared library libffi.so.7Archlinux:
 
 https://lakur.tech/2021/10/21/arch-linux-cannot-find-shared-library-libffi-so-7/
+
+# How to know the difference between two dicts
+	    
+Since it seems nobody mentioned [`deepdiff`](https://pypi.org/project/deepdiff/), I will add it here for completeness. I find it very convenient for getting diff of (nested) objects in general:
+
+### Installation    
+
+    pip install deepdiff
+
+### Sample code
+
+    import deepdiff
+    import json
+  
+    dict_1 = {
+        "a": 1,
+        "nested": {
+            "b": 1,
+        }
+    }
+
+    dict_2 = {
+        "a": 2,
+        "nested": {
+            "b": 2,
+        }
+    }
+
+    diff = deepdiff.DeepDiff(dict_1, dict_2)
+    print(json.dumps(diff, indent=4))
+
+### Output
+
+    {
+        "values_changed": {
+            "root['a']": {
+                "new_value": 2,
+                "old_value": 1
+            },
+            "root['nested']['b']": {
+                "new_value": 2,
+                "old_value": 1
+            }
+        }
+    }
+
+Note about pretty-printing the result for inspection: The above code works if both dicts have the same attribute keys (with possibly different attribute values as in the example). However, if an `"extra"` attribute is present is one of the dicts, `json.dumps()` fails with
+
+    TypeError: Object of type PrettyOrderedSet is not JSON serializable
+
+Solution: use `diff.to_json()` and `json.loads()` / `json.dumps()` to pretty-print:
+
+    import deepdiff
+    import json
+
+    dict_1 = {
+        "a": 1,
+        "nested": {
+            "b": 1,
+        },
+        "extra": 3
+    }
+
+    dict_2 = {
+        "a": 2,
+        "nested": {
+            "b": 2,
+        }
+    }
+
+    diff = deepdiff.DeepDiff(dict_1, dict_2)
+    print(json.dumps(json.loads(diff.to_json()), indent=4))  
+
+Output:
+
+    {
+        "dictionary_item_removed": [
+            "root['extra']"
+        ],
+        "values_changed": {
+            "root['a']": {
+                "new_value": 2,
+                "old_value": 1
+            },
+            "root['nested']['b']": {
+                "new_value": 2,
+                "old_value": 1
+            }
+        }
+    }
+
+Alternative: use `pprint`, results in a different formatting:
+
+    import pprint
+
+    # same code as above
+
+    pprint.pprint(diff, indent=4)
+
+Output:
+
+    {   'dictionary_item_removed': [root['extra']],
+        'values_changed': {   "root['a']": {   'new_value': 2,
+                                               'old_value': 1},
+                              "root['nested']['b']": {   'new_value': 2,
+                                                         'old_value': 1}}}
