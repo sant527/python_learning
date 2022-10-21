@@ -3269,6 +3269,8 @@ If you want to be able to run the docker CLI command as a non-root user, add you
 ```
 sudo usermod -aG docker ubuntu
 
+sudo gpasswd -a $USER docker
+
 note: immeditely after this the user may not get access
 
 check
