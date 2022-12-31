@@ -3400,7 +3400,13 @@ project_folder
     sudo apt-get update
     sudo apt install zsh
 
+```
+sudo vim /etc/pam.d/chsh
+```
+- then, comment `auth       required   pam_shells.so`
+
 # change the default shell
+    sudo chsh $USER -s $(which zsh)
     sudo chsh -s /usr/bin/zsh
 
 the above will ask for password so better do this
