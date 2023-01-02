@@ -4950,3 +4950,10 @@ Output:
                                                'old_value': 1},
                               "root['nested']['b']": {   'new_value': 2,
                                                          'old_value': 1}}}
+
+
+
+# change timezone
+```
+sudo timedatectl set-timezone Asia/Kolkata
+```
