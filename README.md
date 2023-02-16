@@ -4957,3 +4957,23 @@ Output:
 ```
 sudo timedatectl set-timezone Asia/Kolkata
 ```
+
+  
+# What is the global Keyword Used for in Python?
+- The global keyword is mostly used for two reasons:
+- To modify the value of a global variable.
+- To make a local variable accessible outside the local scope.	   
+
+https://www.freecodecamp.org/news/global-variable-in-python-non-local-python-variables/#:~:text=In%20Python%20and%20most%20programming,as%20they%20have%20global%20scope.
+
+![image](https://user-images.githubusercontent.com/6462531/219381673-e0f19712-9efe-4a76-87d4-7881b48803b4.png)
+
+
+![image](https://user-images.githubusercontent.com/6462531/219381751-4f39790f-ab97-4efc-977b-85d16ece2c96.png)
+	  
+![image](https://user-images.githubusercontent.com/6462531/219381351-5e50756a-0ef4-4a0c-8476-b442aee57a9e.png)
+
+![image](https://user-images.githubusercontent.com/6462531/219381884-2b8f01d7-12cb-490d-8dfb-56688a0d1899.png)
+
+![image](https://user-images.githubusercontent.com/6462531/219381996-fec0a0e0-431d-44ec-bea3-22980e771e85.png)
+	    
