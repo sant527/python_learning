@@ -4977,3 +4977,102 @@ https://www.freecodecamp.org/news/global-variable-in-python-non-local-python-var
 
 ![image](https://user-images.githubusercontent.com/6462531/219381996-fec0a0e0-431d-44ec-bea3-22980e771e85.png)
 	    
+
+	    
+# DRF
+
+```
+class SnippetSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    result = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Snippet
+        fields = ('title', 'code', 'owner', 'url', 'result')
+
+    def get_result(self, obj):
+        # code here to calculate the result
+        # or return obj.calc_result() if you have that calculation in the model
+        return "some result"
+
+class Dataset(models.Model):
+	""" 
+	If we declare the choices like this, then
+	we can use it like an enum later on.
+	eg. if gender == Pets.MALE: ...
+	Which avoids the whole, was it == "M" or
+	== "m" or even == "male", or == "Male" etc.
+	"""
+	FULL_REFRESH = "full_refresh"
+	INCREMENTAL_REFRESH = "inc_update"
+	REFRESH_CHOICES = (
+		(FULL_REFRESH, "Full Refresh"),
+		(INCREMENTAL_REFRESH, "Incremental Refresh"),
+	)
+
+	MONTHLY = "monthly"
+	WEEKLY = "weekly"
+	QUATERLY = "quaterly"
+	HALY_YEALRLY = "half_yearly"
+	DAILY = "daily"
+	REFRESH_FREQUENCY_CHOICES = (
+		(DAILY, "Daily"),
+		(MONTHLY, "Monthly"),
+		(WEEKLY, "Weekly"),
+		(QUATERLY, "Quaterly"),
+		(HALY_YEALRLY, "Half Yearly")
+	)
+
+
+	name = models.CharField(max_length=200, unique=True)
+	refresh_type = models.CharField(max_length=100, choices=REFRESH_CHOICES)
+	ingestion_frequency = models.CharField(max_length=100, choices=REFRESH_FREQUENCY_CHOICES)
+	submission_frequency = models.CharField(max_length=100, choices=REFRESH_FREQUENCY_CHOICES)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	created_by = models.ForeignKey(
+		"custom_users.User",
+		related_name="%(app_label)s_%(class)s_user",
+		on_delete=models.SET_NULL,
+		null=True
+	)
+
+	def __str__(self):
+		return f"{self.name}"		    
+	    
+# CHOICE FIEDS CAN BE ACCESSED using _display	  
+
+class DatasetStatsSerializer2(serializers.ModelSerializer):
+    dataset_history_url = serializers.SerializerMethodField()
+    dataset_id = serializers.ReadOnlyField(source='dataset.id')
+    name = serializers.SerializerMethodField()
+    refresh_type = serializers.SerializerMethodField()
+    ingestion_frequency = serializers.SerializerMethodField()
+    submission_frequency = serializers.SerializerMethodField()
+    ingested_files = serializers.SerializerMethodField()
+    class Meta:
+        model = DatasetStats
+        exclude = ('id','dataset','created_by')
+
+    def get_refresh_type(self,obj):
+        return obj.dataset.get_refresh_type_display()
+
+    def get_ingestion_frequency(self,obj):
+        return obj.dataset.get_ingestion_frequency_display()
+
+    def get_submission_frequency(self,obj):
+        return obj.dataset.get_submission_frequency_display()
+
+    def get_name(self,obj):
+        return obj.dataset.name.upper()
+
+    def get_dataset_history_url(self,obj):
+        return f"/dataset_stats/{obj.dataset.id}/"
+
+    def get_ingested_files(self,obj):
+        return obj.ingested_files.split(",")
+
+# importing another serializer and avoiding one
+
+class DatasetStatsSerializer3(DatasetStatsSerializer2):
+    dataset_history_url = None
